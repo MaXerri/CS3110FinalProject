@@ -1,4 +1,4 @@
-type brd
+type board
 (** The abstract type of values representing a board and game state. *)
 
 type position
