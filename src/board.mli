@@ -1,11 +1,4 @@
-(** Representation of static adventure data.
-
-    This module represents the data stored in adventure files, including the
-    rooms and exits. It handles loading of that data from JSON as well as
-    querying the data.
-
-    For examples, the specifications in this interface reference the example "Ho
-    Plaza" adventure found in [data/ho_plaza.json]. *)
+(** Representation of a board and its current state. *)
 
 (*** Types ********************************************************************)
 
