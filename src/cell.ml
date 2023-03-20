@@ -16,7 +16,11 @@ type cell = {
 let clear = raise (Failure "Unimplemented: Cell.clear")
 
 let to_char c =
-  match c with
-  | Cleared -> '_'
+  match c.visibiblity with
+  | Cleared -> (
+      match c.c_type with
+      | Mine -> '!'
+      | Empty -> '_'
+      | Adjacent i -> char_of_int i)
   | Flagged -> '?'
   | Hidden -> 'X'
