@@ -17,17 +17,21 @@ let valid_size f =
 (** [play_game f] starts a minesweeper game of size f. *)
 let play_game f =
   let i = String.split_on_char ' ' f in
-  Minesweeper.Board.generate
+  Minesweeper.State.init_state
     (int_of_string (List.nth i 0))
     (int_of_string (List.nth i 1))
 
-let rec repeat () =
-  print_endline "Input a valid size";
-  print_string "> ";
-  match read_line () with
-  | exception End_of_file -> ()
-  | file_name ->
-      if valid_size file_name = false then repeat () else play_game file_name
+let rec get_input () =
+  let x = read_line () in 
+  match valid_size (x) with
+  | true -> play_game x
+  | false -> print_string "Invalid Input"; get_input ()
+
+
+
+let print_board_helper () = 
+  print_endline "X";
+
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
@@ -37,10 +41,11 @@ let main () =
      row and column size by 1 space";
   print_string "> ";
 
-  match read_line () with
-  | exception End_of_file -> ()
-  | file_name ->
-      if valid_size file_name = false then repeat () else play_game file_name
+ let initial_state = get_input () in 
+  while ((Minesweeper.State.is_game_over initial_state) = false) do 
+    print_board_helper ();
 
+
+  
 (* Execute the game engine. *)
 let () = main ()
