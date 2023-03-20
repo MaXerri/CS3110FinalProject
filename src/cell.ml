@@ -14,4 +14,9 @@ type cell = {
 }
 
 let clear = raise (Failure "Unimplemented: Cell.clear")
-let to_char = raise (Failure "Unimplemented: Cell.to_char")
+
+let to_char c =
+  match c with
+  | Cleared -> '_'
+  | Flagged -> '?'
+  | Hidden -> 'X'

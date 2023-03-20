@@ -29,11 +29,19 @@ let rec get_input () =
       print_string "Invalid input. Try again";
       get_input ()
 
-let rec print_board_helper st =
-  match Minesweeper.State.get_current_board st with
+let rec print_board_helper grid =
+  match grid with
   | [] -> print_newline ()
   | h :: t ->
-      Array.iter (fun elem -> print_string "X ") h;
+      List.iter
+        (fun elem ->
+          match Minesweeper.Cell.to_char elem with
+          | 'X' -> print_string "! "
+          | '_' -> print_string "_ "
+          | '?' -> print_string "? "
+          | _ -> print_string "error")
+        h;
+      print_newline ();
       print_board_helper t (*This has to be changed*)
 
 (** [main ()] prompts for the game to play, then starts it. *)
@@ -46,7 +54,9 @@ let main () =
 
   let initial_state = get_input () in
   while not (Minesweeper.State.is_game_over initial_state) do
-    print_board_helper initial_state;
+    print_board_helper
+      (Minesweeper.State.get_current_board initial_state
+      |> Minesweeper.Board.grid);
     print_endline "Clear Another Square"
   done
 

@@ -24,3 +24,6 @@ val display : board -> _
 val generate : int -> int -> board
 (** [generate m n] is a board with dimensions [m] columns and [n] rows with no
     tiles revealed. *)
+
+val grid : board -> Cell.cell list list
+(** [grid b] returns the grid of the cells of the board *)
