@@ -20,6 +20,7 @@ let generate i_of_type =
   | _ -> { c_type = Adjacent i_of_type; visibility = Hidden }
 
 let clear = raise (Failure "Unimplemented: Cell.clear")
+let flag = raise (Failure "Unimplemented: Cell.flag")
 
 let to_char c =
   match c.visibility with

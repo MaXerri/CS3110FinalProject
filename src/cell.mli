@@ -13,6 +13,9 @@ val generate : int -> cell
 val clear : cell -> cell
 (** [clear c] is the cell [c] after the player has attempted to clear it. *)
 
+val flag : cell -> cell
+(** [flag c] is the cell [c] after the player has attempted to flag it. *)
+
 val to_char : cell -> char
 (** [to_char c] is the character representing the cell [c] in its current
     visibility state. *)
