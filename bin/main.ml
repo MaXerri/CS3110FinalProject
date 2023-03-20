@@ -25,12 +25,12 @@ let rec get_input () =
   let x = read_line () in 
   match valid_size (x) with
   | true -> play_game x
-  | false -> print_string "Invalid Input"; get_input ()
+  | false -> (print_string "Invalid input. Try again"; get_input ()) (*This has to be changed*)
 
-
-
-let print_board_helper () = 
-  print_endline "X";
+let rec print_board_helper st = 
+ match (Minesweeper.State.get_current_board st) with
+ | [] -> print_newline ();
+ | h::t -> let () = Array.iter (fun elem -> print_string ("X ")) h; print_board_helper t;
 
 
 (** [main ()] prompts for the game to play, then starts it. *)
@@ -41,11 +41,11 @@ let main () =
      row and column size by 1 space";
   print_string "> ";
 
- let initial_state = get_input () in 
-  while ((Minesweeper.State.is_game_over initial_state) = false) do 
-    print_board_helper ();
-
-
+ let initial_state = get_input in 
+  while (not (Minesweeper.State.is_game_over initial_state)) do 
+    print_board_helper initial_state;
+    print_endline "Clear Another Square";
+  done 
   
 (* Execute the game engine. *)
 let () = main ()
