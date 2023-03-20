@@ -13,6 +13,7 @@ type cell = {
   visibility : cell_visibility;
 }
 
+let generate = raise (Failure "Unimplemented: Cell.generate")
 let clear = raise (Failure "Unimplemented: Cell.clear")
 
 let to_char c =
