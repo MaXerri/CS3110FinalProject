@@ -13,7 +13,12 @@ type cell = {
   visibility : cell_visibility;
 }
 
-let generate = raise (Failure "Unimplemented: Cell.generate")
+let generate i_of_type =
+  match i_of_type with
+  | -1 -> { c_type = Mine; visibility = Hidden }
+  | 0 -> { c_type = Empty; visibility = Hidden }
+  | _ -> { c_type = Adjacent i_of_type; visibility = Hidden }
+
 let clear = raise (Failure "Unimplemented: Cell.clear")
 
 let to_char c =
