@@ -10,13 +10,13 @@ type cell_visibility =
 
 type cell = {
   c_type : cell_type;
-  visibiblity : cell_visibility;
+  visibility : cell_visibility;
 }
 
 let clear = raise (Failure "Unimplemented: Cell.clear")
 
 let to_char c =
-  match c.visibiblity with
+  match c.visibility with
   | Cleared -> (
       match c.c_type with
       | Mine -> '!'
