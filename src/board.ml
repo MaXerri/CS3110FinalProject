@@ -1,4 +1,4 @@
-type board
+type board = Cell.cell list list
 (** The abstract type of values representing a board and game state. *)
 
 type position
