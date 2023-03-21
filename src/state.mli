@@ -9,10 +9,6 @@ val init_state : int -> int -> t
 val get_current_board : t -> Board.board
 (** [current_board st] returns the board associated with the current state*)
 
-val clicked : t -> (int * int) list
-(** [visited st] is a set-like list of the cell identifiers the player has
-    clicked. *)
-
 val is_game_over : t -> bool
 (** [is_game_over st] returns true if the game state signifies that the game is
     over *)

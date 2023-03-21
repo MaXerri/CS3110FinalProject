@@ -80,14 +80,17 @@ let rec advance_game st =
 
 (*Loops until the end of the game is reached*)
 let rec progress st =
-  match Minesweeper.State.is_game_over (advance_game st) with
+  let x = advance_game st in
+  match Minesweeper.State.is_game_over x with
   | false ->
       print_board_helper
         (Minesweeper.Board.to_string_list
            (Minesweeper.State.get_current_board st));
-      print_endline "Clear Another Square"
-  | true ->
-      print_endline "Game Over" (*This will need to be changed eventually*)
+      print_endline "Clear Another Square";
+      print_string "> ";
+      progress x
+  | true -> print_endline "Game Over"
+(*This will need to be changed eventually*)
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
