@@ -44,6 +44,25 @@ let rec print_board_helper grid =
       print_newline ();
       print_board_helper t (*This has to be changed*)
 
+(*retreives the next state based on a user input*)
+let rec advance_game st =
+  let x = read_line () in
+  match Minesweeper.State.clear x st with
+  | Illegal ->
+      print_endline "Invalid cell.  Try again";
+      advance_game st
+  | Legal st -> st
+
+(*Loops until the end of the game is reached*)
+let rec progress st =
+  match Minesweeper.State.is_game_over (advance_game st) with
+  | false ->
+      print_board_helper
+        (Minesweeper.State.get_current_board st |> Minesweeper.Board.grid);
+      print_endline "Clear Another Square"
+  | true ->
+      print_endline "Game Over" (*This will need to be changed eventually*)
+
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
   print_string "\n\nWelcome to the 3110 Text Adventure Game engine.\n";
@@ -51,14 +70,11 @@ let main () =
     "Please enter the size of the game you want to load. Separate the desired \
      row and column size by 1 space";
   print_string "> ";
-
   let initial_state = get_input () in
-  while not (Minesweeper.State.is_game_over initial_state) do
-    print_board_helper
-      (Minesweeper.State.get_current_board initial_state
-      |> Minesweeper.Board.grid);
-    print_endline "Clear Another Square"
-  done
+  print_board_helper (*fix the printer helper*)
+    (Minesweeper.State.get_current_board initial_state |> Minesweeper.Board.grid);
+  print_endline "Clear Another Square";
+  progress initial_state
 
 (* Execute the game engine. *)
 let () = main ()
