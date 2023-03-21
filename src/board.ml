@@ -64,6 +64,41 @@ let string_of_board brd =
   in
   string_of_brdGrd_helper 0 brd.grid
 
+let parse_boolean_lists above at below =
+  (*Internal helper 1*)
+  let bool_list_to_int b_list =
+    let bool_inc b i = if b then i + 1 else i in
+    let rec b_list_parse blst =
+      match blst with
+      | [] -> 0
+      | h :: t -> bool_inc h (b_list_parse t)
+    in
+    b_list_parse b_list
+  in
+  (*Internal helper 2*)
+  let rec pbl_helper (above : bool list) (at : bool list) (below : bool list) =
+    match (above, at, below) with
+    | [ h0; h1 ], [ i0; i1 ], [ j0; j1 ] ->
+        let c =
+          if i1 then Cell.generate (-1)
+          else Cell.generate (bool_list_to_int [ h0; h1; i0; j0; j1 ])
+        in
+        [ c ]
+    | h0 :: h1 :: h2 :: t_ab, i0 :: i1 :: i2 :: t_at, j0 :: j1 :: j2 :: t_bl ->
+        let c =
+          if i1 then Cell.generate (-1)
+          else
+            Cell.generate (bool_list_to_int [ h0; h1; h2; i0; i2; j0; j1; j2 ])
+        in
+        c :: pbl_helper (h1 :: h2 :: t_ab) (i1 :: i2 :: t_at) (j1 :: j2 :: t_bl)
+    | _, _, _ ->
+        raise
+          (Failure
+             {|Improper parsing in Board.parse_boolean_lists "Internal helper 2"|})
+  in
+  (*Execution*)
+  pbl_helper above at below
+
 (*** Functions ****************************************************************)
 
 let clear_position brd (position : int * int) =
@@ -85,5 +120,8 @@ let generate m n =
     m;
     n;
   }
+
+let parse_boolean_board (bb : bool array) : board =
+  raise (Failure "Unimplemented Cell.parse_boolean_board")
 
 let dimensions brd = (brd.m, brd.n)
