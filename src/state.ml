@@ -30,16 +30,15 @@ let valid_size f =
   then false
   else true
 
-let clear input st =
+let clear input st : result =
   let i = String.split_on_char ' ' input in
   if valid_size input = false then Illegal
   else
     Legal
       {
-        current_board =
-          Board.generate
-            (int_of_string (List.nth i 0))
-            (int_of_string (List.nth i 1));
+        current_board = st.current_board;
+        (*Board.generate (int_of_string (List.nth i 0)) (int_of_string (List.nth
+          i 1));*)
         clicked =
           [ (int_of_string (List.nth i 0), int_of_string (List.nth i 1)) ];
         game_over = false (*fix this eventually*);
