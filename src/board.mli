@@ -11,6 +11,10 @@ val clear_position : board -> int * int -> board
 (** [clear_position x y] is the board [x] with position [y] having been
     attempted to be cleared, regardless of the success of the clearing. *)
 
+val flag_position : board -> int * int -> board
+(** [flag_position x y] is the board [x] with position [y] having been attempted
+    to be flagged. *)
+
 val to_string_list : board -> string list
 (** [to_string_list x] is a list of strings which when printed represent the
     board [x]. *)
