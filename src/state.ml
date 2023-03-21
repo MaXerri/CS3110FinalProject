@@ -1,14 +1,10 @@
 type t = {
   current_board : Board.board;
-  clicked : (int * int) list;
   game_over : bool;
 }
 
-let init_state m n =
-  { current_board = Board.generate m n; clicked = []; game_over = false }
-
+let init_state m n = { current_board = Board.generate m n; game_over = false }
 let get_current_board st = st.current_board
-let clicked st = st.clicked
 let is_game_over st = st.game_over
 
 type result =
@@ -36,10 +32,6 @@ let clear input st : result =
   else
     Legal
       {
-        current_board = st.current_board;
-        (*Board.generate (int_of_string (List.nth i 0)) (int_of_string (List.nth
-          i 1));*)
-        clicked =
-          [ (int_of_string (List.nth i 0), int_of_string (List.nth i 1)) ];
+        current_board = raise (Failure "Unimplemented: State.clear");
         game_over = false (*fix this eventually*);
       }

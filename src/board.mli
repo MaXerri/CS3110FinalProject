@@ -5,12 +5,9 @@
 type board
 (** The abstract type of values representing a board and game state. *)
 
-type position
-(** The abstract type of values representing a location on an abstract board. *)
-
 (*** Functions ****************************************************************)
 
-val clear_position : board -> position -> board
+val clear_position : board -> int * int -> board
 (** [clear_position x y] is the board [x] with position [y] having been
     attempted to be cleared, regardless of the success of the clearing. *)
 
