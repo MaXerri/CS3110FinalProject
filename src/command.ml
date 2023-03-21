@@ -31,6 +31,12 @@ let parse str =
     | h :: t ->
         if h = "clear" then
           if List.length t = 2 then
-            Clear (int_of_string (List.nth t 0), int_of_string (List.nth t 1))
+            Clear
+              ( (match int_of_string_opt (List.nth t 0) with
+                | Some i -> i
+                | None -> raise Malformed),
+                match int_of_string_opt (List.nth t 1) with
+                | Some i -> i
+                | None -> raise Malformed )
           else raise Malformed
         else Quit

@@ -47,11 +47,17 @@ let rec print_board_helper grid =
 (*retreives the next state based on a user input*)
 let rec advance_game st =
   let x = read_line () in
-  match Minesweeper.State.clear x st with
-  | Illegal ->
-      print_endline "Invalid cell.  Try again";
-      advance_game st
-  | Legal st -> st
+  match try Minesweeper.Command.parse x with
+    | Minesweeper.Command.Empty -> (print_endline "Empty Input. Try Again"; print_string "> "; advance_game st)
+    | Minesweeper.Command.Malformed -> (print_endline "Malformed Input. Try Again"; print_string "> "; advance_game st)
+    | _ -> match Minesweeper.Command.parse x with 
+          | Minesweeper.Command.Clear n -> 
+            (match (Minesweeper.State.clear n st) with 
+            | Minesweeper.State.Illegal ->
+              (print_endline "Invalid cell. Try again"; advance_game st)
+            | Minesweeper.State.Legal state -> state)
+          | Minesweeper.Command.Quit -> st
+
 
 (*Loops until the end of the game is reached*)
 let rec progress st =
