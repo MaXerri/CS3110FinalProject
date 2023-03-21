@@ -28,12 +28,48 @@ let rec generate_list controller (l : int) =
 let generate_grid controller (m : int) (n : int) =
   generate_list (fun a -> if a then generate_list controller n else []) m
 
+(**Returns string corresponding to character [c]*)
+let s_of_c c = String.make 1 c
+
+(**Returns the string representation of the row [row]*)
+let rec string_of_row (row : Cell.cell list) : string =
+  match row with
+  | [] -> ""
+  | h :: t -> s_of_c (Cell.to_char h) ^ " " ^ string_of_row t
+
+(**Returns row header for given index*)
+let row_of_int i =
+  if i < 27 then s_of_c (Char.chr (i + 65)) ^ " "
+  else raise (Failure "integer out of numerical index")
+
+(**Returns a list of strings representing the rows of a game board which contain
+   cells*)
+let string_of_board brd =
+  (*Helper function 1*)
+  let labels_of_width w =
+    let rec labels_of_width_helper i : string =
+      if i > w then "" else row_of_int (65 + i) ^ labels_of_width_helper (i + 1)
+    in
+    labels_of_width_helper w
+  in
+  (*Helper function 2*)
+  let rec string_of_brdGrd_helper (ind : int) (grid : Cell.cell list list) :
+      string list =
+    match grid with
+    | [] -> "" :: [ "  " ^ labels_of_width brd.n ]
+    | [ h ] -> [ row_of_int ind ^ string_of_row h ]
+    | h :: t ->
+        (row_of_int ind ^ string_of_row h)
+        :: string_of_brdGrd_helper (ind + 1) t
+  in
+  string_of_brdGrd_helper 0 brd.grid
+
 (*** Functions ****************************************************************)
 
 let clear_position brd (tup : int * int) =
   { brd with grid = mod_indof_grid Cell.clear tup brd.grid }
 
-let to_string_list = raise (Failure "Unimplemented: Board.to_string_list")
+let to_string_list brd : string list = string_of_board brd
 let display = raise (Failure "Unimplemented: Board.display")
 
 let generate m n =
