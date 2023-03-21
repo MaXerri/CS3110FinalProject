@@ -23,6 +23,10 @@ val generate : int -> int -> board
 (** [generate m n] is a board with dimensions [m] columns and [n] rows with no
     tiles revealed. *)
 
+val generate_from_bool_grid : bool list list -> board
+(** [generate_from_bool_grid grd] is a board with mines at locations
+    corresponding to true values in [grd]. *)
+
 val dimensions : board -> int * int
 (** [dimensions brd] is a tuple [(m*n)] corresponding to [m] columns and [n]
     rows. *)

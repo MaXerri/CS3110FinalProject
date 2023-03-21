@@ -99,6 +99,27 @@ let parse_boolean_lists above at below =
   (*Execution*)
   pbl_helper above at below
 
+let rec gen_false_list (len : int) =
+  if len < 0 then [] else false :: gen_false_list (len - 1)
+
+let parse_boolean_grid (grd_in : bool list list) =
+  let cols =
+    match grd_in with
+    | h :: _ -> List.length h
+    | [] -> 0
+  in
+  let f_list = gen_false_list cols in
+  let grd_app = f_list :: grd_in in
+  let rec parse_grid grd : Cell.cell list list =
+    match grd with
+    | r0 :: r1 :: r2 :: t ->
+        parse_boolean_lists (false :: r0) (false :: r1) (false :: r2)
+        :: parse_grid (r1 :: r2 :: t)
+    | [ r0; r1 ] -> [ parse_boolean_lists r0 r1 f_list ]
+    | _ -> raise (Failure "Unnaccounted for failure in parse_boolean_grid")
+  in
+  parse_grid grd_app
+
 (*** Functions ****************************************************************)
 
 let clear_position brd (position : int * int) =
@@ -121,7 +142,14 @@ let generate m n =
     n;
   }
 
-let parse_boolean_board (bb : bool array) : board =
-  raise (Failure "Unimplemented Cell.parse_boolean_board")
+let generate_from_bool_grid bool_grd =
+  {
+    grid = parse_boolean_grid bool_grd;
+    m = List.length bool_grd;
+    n =
+      (match bool_grd with
+      | h :: _ -> List.length h
+      | _ -> raise (Failure "Invalid grid input (empty rows)"));
+  }
 
 let dimensions brd = (brd.m, brd.n)
