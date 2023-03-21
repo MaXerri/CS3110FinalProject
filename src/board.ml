@@ -25,7 +25,7 @@ let mod_indof_grid foi (ind : int * int) (grd : 'a list list) =
 let rec generate_list controller (l : int) =
   if l = 0 then [] else controller true :: generate_list controller (l - 1)
 
-let generate_grid controller (m : int) (n : int) =
+let generate_grid_naive controller (m : int) (n : int) =
   generate_list (fun a -> if a then generate_list controller n else []) m
 
 (**Returns string corresponding to character [c]*)
@@ -66,18 +66,18 @@ let string_of_board brd =
 
 (*** Functions ****************************************************************)
 
-let clear_position brd (tup : int * int) =
-  { brd with grid = mod_indof_grid Cell.clear tup brd.grid }
+let clear_position brd (position : int * int) =
+  { brd with grid = mod_indof_grid Cell.clear position brd.grid }
 
-let flag_position brd (tup : int * int) =
-  { brd with grid = mod_indof_grid Cell.flag tup brd.grid }
+let flag_position brd (position : int * int) =
+  { brd with grid = mod_indof_grid Cell.flag position brd.grid }
 
 let to_string_list brd : string list = string_of_board brd
 
 let generate m n =
   {
     grid =
-      generate_grid
+      generate_grid_naive
         (fun a ->
           if a then Cell.generate 0
           else raise (Failure "Poorly defined controller"))
