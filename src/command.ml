@@ -1,4 +1,4 @@
-type object_phrase = string list
+type object_phrase = int * int
 
 type command =
   | Clear of object_phrase
@@ -30,5 +30,7 @@ let parse str =
     | [] -> raise Empty
     | h :: t ->
         if h = "clear" then
-          if List.length t = 2 then Clear t else raise Malformed
+          if List.length t = 2 then
+            Clear (int_of_string (List.nth t 0), int_of_string (List.nth t 1))
+          else raise Malformed
         else Quit
