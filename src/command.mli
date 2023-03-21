@@ -1,4 +1,4 @@
-type object_phrase = string list
+type object_phrase = int * int
 (** The type [object_phrase] represents the object phrase that can be part of a
     player command. Each element of the list represents a word of the object
     phrase, where a "word" is defined as a consecutive sequence of non-space
