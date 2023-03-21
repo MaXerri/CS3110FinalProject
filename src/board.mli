@@ -28,6 +28,3 @@ val generate : int -> int -> board
 val dimensions : board -> int * int
 (** [dimensions brd] is a tuple [(m*n)] corresponding to [m] columns and [n]
     rows. *)
-
-val grid : board -> Cell.cell list list
-(** [grid b] returns the grid of the cells of the board *)

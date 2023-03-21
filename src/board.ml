@@ -15,4 +15,3 @@ let to_string_list = raise (Failure "Unimplemented: Board.to_string_list")
 let display = raise (Failure "Unimplemented: Board.display")
 let generate = raise (Failure "Unimplemented: Board.generate")
 let dimensions brd = (brd.m, brd.n)
-let grid b = b.grid
