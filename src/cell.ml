@@ -31,3 +31,14 @@ let to_char c =
       | Adjacent i -> char_of_int i)
   | Flagged -> '?'
   | Hidden -> 'X'
+
+let to_int c =
+  match c.c_type with
+  | Mine -> -1
+  | Empty -> 0
+  | Adjacent i -> i
+
+let not_mine c =
+  match c.c_type with
+  | Mine -> true
+  | _ -> false

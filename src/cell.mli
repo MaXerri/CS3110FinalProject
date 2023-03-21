@@ -19,3 +19,11 @@ val flag : cell -> cell
 val to_char : cell -> char
 (** [to_char c] is the character representing the cell [c] in its current
     visibility state. *)
+
+val to_int : cell -> int
+(** [to_int c] is the integer representing the cell [c] in its current state.
+    This function is the inverse of [generate]*)
+
+val not_mine : cell -> bool
+(** [not_mine c] is a boolean representing whether the cell [c] represents a
+    mine. *)
