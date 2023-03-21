@@ -73,7 +73,6 @@ let flag_position brd (tup : int * int) =
   { brd with grid = mod_indof_grid Cell.flag tup brd.grid }
 
 let to_string_list brd : string list = string_of_board brd
-let display = raise (Failure "Unimplemented: Board.display")
 
 let generate m n =
   {
