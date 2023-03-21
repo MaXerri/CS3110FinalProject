@@ -49,7 +49,9 @@ let clear input st : result =
   else
     Legal
       {
-        current_board = raise (Failure "Unimplemented: State.clear");
+        current_board =
+          Board.clear_position st.current_board
+            (int_of_string (List.nth i 0), int_of_string (List.nth i 1));
         (*Call Board.clear when implemented*)
         game_over = false (*fix this eventually*);
       }
