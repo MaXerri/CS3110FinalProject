@@ -1,10 +1,11 @@
-Preliminaries:  You need a development system with ocmal installed
+Preliminaries:  In your UNIX devleopment enviornment you need to have installed the OPAM OCaml package manager and an OPAM switch.  The installation instructions for OPAM and the OPAM switch can be found in the CS3110 textbook instructions for OCaml instalation from https://cs3110.github.io/textbook/chapters/preface/install.html
+
 
 Download the package from https://github.coecis.cornell.edu/max3/CS3110-Final-Project.git
 
 If you downloaded as a zip, unzip the folder
 
-Run the following terminal commands in the the first directory:
+Run the following terminal commands in the first directory:
 dune build 
 
 Then you can start the game by running:
