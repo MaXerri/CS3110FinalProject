@@ -19,7 +19,7 @@ publish: true
 title: "Minesweeper But Cooler"
 # OK if this is a Cornell Github link, but public gallery viewers won't be able to see it.
 git-repo: "https://github.coecis.cornell.edu/max3/CS3110-Final-Project"
-demo-video-url: ""
+demo-video-url: "https://youtu.be/WqCJ1WdJqEk"
 # Write a short, attention-grabbing description of your project.
 desc: >
   Our project is a version of Minesweeper.  It supports all of the features of 
@@ -27,6 +27,6 @@ desc: >
   notifying the user how many bombs surround a cleared cell.  Commands are all 
   written in the comand line and after every input of a command the new gameboard
   is printed to the user.
-  
+
   In the future, we hope to implement additional gamemodes such as having to
   defuse mines or race a clock.
