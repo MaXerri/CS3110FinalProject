@@ -11,7 +11,9 @@ type object_phrase = int * int
     by [Clear] must not be empty. *)
 type command =
   | Clear of object_phrase
+  | Flag of object_phrase
   | Quit
+  | Restart
 
 exception Empty
 (** Raised when an empty command is parsed. *)

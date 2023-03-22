@@ -21,12 +21,14 @@ let play_game f =
     (int_of_string (List.nth i 0))
     (int_of_string (List.nth i 1))
 
+(*Gets input for the boardsize*)
 let rec get_input () =
   let x = read_line () in
   match valid_size x with
   | true -> play_game x
   | false ->
-      print_string "Invalid input. Try again";
+      print_endline "Invalid input. Try again";
+      print_string "> ";
       get_input ()
 
 (** let rec print_board_helper grid = match grid with | [] -> print_newline () |
@@ -68,7 +70,29 @@ let rec advance_game st =
             print_string "> ";
             advance_game st
         | Minesweeper.State.Legal state -> state)
-    | Minesweeper.Command.Quit -> st
+    | Minesweeper.Command.Flag n -> (
+        match Minesweeper.State.flag (tuple_to_str n) st with
+        | Minesweeper.State.Illegal ->
+            print_endline "Invalid cell. Try again";
+            print_string "> ";
+            advance_game st
+        | Minesweeper.State.Legal state -> state)
+    | Minesweeper.Command.Quit ->
+        print_string "You Have Exitted The Game";
+        exit 0
+    | Minesweeper.Command.Restart ->
+        print_endline
+          "You have restarted the game.  Input the board size for your new \
+           game.";
+        print_string "> ";
+        let initial_state = get_input () in
+        print_board_helper (*fix the printer helper*)
+          (Minesweeper.Board.to_string_list
+             (Minesweeper.State.get_current_board initial_state));
+        print_newline ();
+        print_endline "Enter a command";
+        print_string "> ";
+        advance_game initial_state
   with
   | Minesweeper.Command.Empty ->
       print_endline "Empty Input. Try Again";
@@ -87,7 +111,8 @@ let rec progress st =
       print_board_helper
         (Minesweeper.Board.to_string_list
            (Minesweeper.State.get_current_board x));
-      print_endline "Clear Another Square";
+      print_newline ();
+      print_endline "Enter a command";
       print_string "> ";
       progress x
   | true -> print_endline "Game Over"
@@ -95,7 +120,17 @@ let rec progress st =
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
-  print_string "\n\nWelcome to the 3110 Text Adventure Game engine.\n";
+  print_string "\n\nWelcome to Minesweeper \n";
+  print_newline ();
+  print_endline "These are the following commands and their descriptions:";
+  print_endline
+    "clear i j -> This means you choose to clear the cell at row i column j";
+  print_endline
+    "flag i j -> This means you choose to flag the cell at row i column j";
+  print_endline
+    "restart -> This starts a new game which you can select the size of";
+  print_endline "quit -> This exits you out of the game";
+  print_newline ();
   print_endline
     "Please enter the size of the game you want to load. Separate the desired \
      row and column size by 1 space";
@@ -104,7 +139,8 @@ let main () =
   print_board_helper (*fix the printer helper*)
     (Minesweeper.Board.to_string_list
        (Minesweeper.State.get_current_board initial_state));
-  print_endline "Clear A Square";
+  print_newline ();
+  print_endline "Enter a command";
   print_string "> ";
   progress initial_state
 

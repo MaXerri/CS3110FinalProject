@@ -19,5 +19,9 @@ type result =
   | Illegal
 
 val clear : string -> t -> result
-(** [go input st] is the result of attempting to a position [input] in state
-    [st]*)
+(** [go input st] is the result of attempting to clear a position [input] in
+    state [st]*)
+
+val flag : string -> t -> result
+(** [go input st] is the result of attempting to flag a position [input] in
+    state [st]*)

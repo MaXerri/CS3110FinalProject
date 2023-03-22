@@ -55,3 +55,16 @@ let clear input st : result =
         (*Call Board.clear when implemented*)
         game_over = false (*fix this eventually*);
       }
+
+let flag input st : result =
+  let i = String.split_on_char ' ' input in
+  if valid_size input st = false then Illegal
+  else
+    Legal
+      {
+        current_board =
+          Board.flag_position st.current_board
+            (int_of_string (List.nth i 0), int_of_string (List.nth i 1));
+        (*Call Board.clear when implemented*)
+        game_over = false (*fix this eventually*);
+      }
