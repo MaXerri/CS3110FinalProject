@@ -48,18 +48,21 @@ let string_of_board brd =
   (*Helper function 1*)
   let labels_of_width w =
     let rec labels_of_width_helper i : string =
-      if i > w then "" else row_of_int (65 + i) ^ labels_of_width_helper (i + 1)
+      if i > w then "" else row_of_int i ^ labels_of_width_helper (i + 1)
     in
-    labels_of_width_helper w
+    labels_of_width_helper 0
   in
   (*Helper function 2*)
   let rec string_of_brdGrd_helper (ind : int) (grid : Cell.cell list list) :
       string list =
     match grid with
-    | [] -> "" :: [ "  " ^ labels_of_width brd.n ]
-    | [ h ] -> [ row_of_int ind ^ string_of_row h ]
+    | [] -> []
+    | [ h ] ->
+        (row_of_int ind ^ " " ^ string_of_row h)
+        :: ""
+        :: [ "   " ^ labels_of_width (brd.n - 1) ]
     | h :: t ->
-        (row_of_int ind ^ string_of_row h)
+        (row_of_int ind ^ " " ^ string_of_row h)
         :: string_of_brdGrd_helper (ind + 1) t
   in
   string_of_brdGrd_helper 0 brd.grid
@@ -153,6 +156,5 @@ let generate_from_bool_grid bool_grd =
   }
 
 let dimensions brd = (brd.m, brd.n)
-
 
 (*this is a testing comment to check branches*)

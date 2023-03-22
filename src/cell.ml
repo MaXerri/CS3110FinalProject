@@ -20,7 +20,12 @@ let generate i_of_type =
   | _ -> { c_type = Adjacent i_of_type; visibility = Hidden }
 
 let clear c = { c with visibility = Cleared }
-let flag c = { c with visibility = Flagged }
+
+let flag c =
+  match c.visibility with
+  | Hidden -> { c with visibility = Flagged }
+  | Flagged -> { c with visibility = Hidden }
+  | Cleared -> c
 
 let to_char c =
   match c.visibility with
