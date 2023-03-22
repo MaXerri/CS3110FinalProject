@@ -86,6 +86,7 @@ let rec advance_game st =
            game.";
         print_string "> ";
         let initial_state = get_input () in
+        print_newline ();
         print_board_helper (*fix the printer helper*)
           (Minesweeper.Board.to_string_list
              (Minesweeper.State.get_current_board initial_state));
