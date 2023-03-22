@@ -15,3 +15,7 @@ doc:
 
 opendoc: doc
 	@bash opendoc.sh
+
+zip:
+	rm -f finalproject.zip
+	zip -r finalproject.zip . -x@exclude.lst
