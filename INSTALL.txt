@@ -1,0 +1,11 @@
+Preliminaries:  You need a development system with ocmal installed
+
+Download the package from https://github.coecis.cornell.edu/max3/CS3110-Final-Project.git
+
+If you downloaded as a zip, unzip the folder
+
+Run the following terminal commands in the the first directory:
+dune build 
+
+Then you can start the game by running:
+make play 

@@ -1,0 +1,29 @@
+---
+# Members of your group.
+group:
+  - name: Mario Xerri
+    netid: max3
+  - name: Luke Silva
+    netid: las495
+  - name: Samuel Palomino
+    netid: sfp58
+  - name: Jalen Jenkins
+    netid: jjj85
+# Your PM.
+pm:
+  name: Owen Ralbovsky
+  netid: oxr2
+# Set to false if you don't want your gallery entry to be public.
+publish: true
+# Pithy title
+title: "Minesweeper"
+# OK if this is a Cornell Github link, but public gallery viewers won't be able to see it.
+git-repo: "https://github.coecis.cornell.edu/max3/CS3110-Final-Project"
+
+# Write a short, attention-grabbing description of your project.
+desc: >
+  Our project is a version of Minesweeper.  It supports all of the features of 
+  the standard minesweeeper game such as clearing a cell, flagging a cell, and 
+  notifying the user how many bombs surround a cleared cell.  Commands are all 
+  written in the comand line and after every input of a command the new gameboard
+  is printed to the user.    
