@@ -26,7 +26,7 @@ let valid_size f st =
      in
      x < 0
      || x
-        >
+        >=
         match Board.dimensions st.current_board with
         | a, _ -> a)
     ||
@@ -37,7 +37,7 @@ let valid_size f st =
     in
     y < 0
     || y
-       >
+       >=
        match Board.dimensions st.current_board with
        | _, a -> a
   then false

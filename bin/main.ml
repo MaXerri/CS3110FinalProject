@@ -65,6 +65,7 @@ let rec advance_game st =
         match Minesweeper.State.clear (tuple_to_str n) st with
         | Minesweeper.State.Illegal ->
             print_endline "Invalid cell. Try again";
+            print_string "> ";
             advance_game st
         | Minesweeper.State.Legal state -> state)
     | Minesweeper.Command.Quit -> st
@@ -85,7 +86,7 @@ let rec progress st =
   | false ->
       print_board_helper
         (Minesweeper.Board.to_string_list
-           (Minesweeper.State.get_current_board st));
+           (Minesweeper.State.get_current_board x));
       print_endline "Clear Another Square";
       print_string "> ";
       progress x
@@ -103,7 +104,8 @@ let main () =
   print_board_helper (*fix the printer helper*)
     (Minesweeper.Board.to_string_list
        (Minesweeper.State.get_current_board initial_state));
-  print_endline "Clear Another Square";
+  print_endline "Clear A Square";
+  print_string "> ";
   progress initial_state
 
 (* Execute the game engine. *)
