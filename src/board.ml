@@ -153,3 +153,6 @@ let generate_from_bool_grid bool_grd =
   }
 
 let dimensions brd = (brd.m, brd.n)
+
+
+(*this is a testing comment to check branches*)
