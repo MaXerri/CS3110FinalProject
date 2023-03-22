@@ -125,9 +125,11 @@ let main () =
   print_newline ();
   print_endline "These are the following commands and their descriptions:";
   print_endline
-    "clear i j -> This means you choose to clear the cell at row i column j";
+    "clear i j -> This means you choose to clear the cell at row i column j. \
+     Rows and columns are both ZERO INDEXED";
   print_endline
-    "flag i j -> This means you choose to flag the cell at row i column j";
+    "flag i j -> This means you choose to toggle flagging the cell at row i \
+     column j. Rows and columns are both ZERO INDEXED";
   print_endline
     "restart -> This starts a new game which you can select the size of";
   print_endline "quit -> This exits you out of the game";
