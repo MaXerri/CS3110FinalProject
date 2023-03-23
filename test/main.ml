@@ -32,7 +32,9 @@ let generate_test (name : string) (input : int) (expected_output: cell) =
   name >:: fun _ ->
     assert_equal expected_output (generate input) ~printer: pp_cellValue
 
-
+let to_int_test (name : string) (input : cell) (expected_output: int) = 
+  name >:: fun _ ->
+    assert_equal expected_output (to_int input) ~printer:string_of_int
 
 
 (*Lists of tests*)
@@ -52,7 +54,21 @@ let cell_test = [
   generate_test "Generate value 9 cell" (9) badV9Cell;
   generate_test "Generate value -2 cell" (-2) badCell;
   generate_test "Generate max int cell" (1073741823) maxIntCell;
-  generate_test "Generate max int cell" (-1073741824) minIntCell
+  generate_test "Generate max int cell" (-1073741824) minIntCell;
+  to_int_test "int of value 1 cell" v1Cell 1;
+  to_int_test "int of value 2 cell" v2Cell 2;
+  to_int_test "int of value 3 cell" v3Cell 3;
+  to_int_test "int of value 4 cell" v4Cell 4;
+  to_int_test "int of value 5 cell" v5Cell 5;
+  to_int_test "int of value 6 cell" v6Cell 6;
+  to_int_test "int of value 7 cell" v7Cell 7;
+  to_int_test "int of value 8 cell" v8Cell 8;
+  to_int_test "int of value 9 cell" badV9Cell 9;
+  to_int_test "int of Mine Cell" mineCell (-1);
+  to_int_test "int of empty Cell" emptyCell 0;
+  to_int_test "int of value -2 Cell" badCell (-2);
+  to_int_test "int of max int cell" maxIntCell 1073741823;
+  to_int_test "int of min int cell" minIntCell (-1073741824);
 ]
 
 let command_test = []
