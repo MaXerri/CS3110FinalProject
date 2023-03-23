@@ -5,6 +5,18 @@ open Cell
 open Command
 open State
 
+(*let cmp_cells (cell1 : cell) (cell2 : cell) = true*)
+
+
+(*Cell generate helper function*)
+let generate_test (name : string) (input : int) (expected_output: cell) = 
+  name >:: fun _ ->
+    assert_equal expected_output (generate input)
+
+
+
+
+
 let board_test = []
 
 let cell_test = []
