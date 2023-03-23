@@ -20,7 +20,8 @@ let v7Cell = generate (7);;
 let v8Cell = generate (8);;
 let badV9Cell = generate (9);;
 let badCell = generate (-2);;
-
+let maxIntCell = generate (1073741823);;
+let minIntCell = generate (-1073741824);;
 
 
 (*Cell pretty print*)
@@ -49,8 +50,9 @@ let cell_test = [
   generate_test "Generate value 7 cell" (7) v7Cell;
   generate_test "Generate value 8 cell" (8) v8Cell;
   generate_test "Generate value 9 cell" (9) badV9Cell;
-  generate_test "Generate value -2 cell" (-2) badCell
-
+  generate_test "Generate value -2 cell" (-2) badCell;
+  generate_test "Generate max int cell" (1073741823) maxIntCell;
+  generate_test "Generate max int cell" (-1073741824) minIntCell
 ]
 
 let command_test = []
