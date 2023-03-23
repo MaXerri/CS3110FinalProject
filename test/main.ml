@@ -1,7 +1,9 @@
 open OUnit2
 open Minesweeper
+(* open Board *)
 open Cell
-(*open Board open Command open State*)
+(* open Command *)
+(* open State *)
 
 (*let cmp_cells (cell1 : cell) (cell2 : cell) = true*)
 
@@ -23,6 +25,7 @@ let minIntCell = generate (-1073741824)
 
 (*Cell pretty print*)
 let pp_cellValue (c : cell) : string = Cell.to_int c |> string_of_int
+let pp_charValue (c : char) : string = String.make 1 c
 
 (*Cell generate helper function*)
 let generate_test (name : string) (input : int) (expected_output : cell) =
@@ -32,6 +35,11 @@ let generate_test (name : string) (input : int) (expected_output : cell) =
 let to_int_test (name : string) (input : cell) (expected_output : int) =
   name >:: fun _ ->
   assert_equal expected_output (to_int input) ~printer:string_of_int
+
+
+let to_char_test (name : string) (input : cell) (expected_output: char) = 
+  name >:: fun _ ->
+    assert_equal expected_output (to_char input) ~printer: pp_charValue
 
 (*Lists of tests*)
 let board_test = []
