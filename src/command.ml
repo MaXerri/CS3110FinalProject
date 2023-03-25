@@ -43,7 +43,7 @@ let parse str =
                 | Some i -> i
                 | None -> raise Malformed )
           else raise Malformed
-        else if h = "flag" then
+        else if h = "flag" && List.length t = 2 then
           Flag
             ( (match int_of_string_opt (List.nth t 0) with
               | Some i -> i

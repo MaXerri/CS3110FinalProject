@@ -6,11 +6,11 @@ let valid_size f =
     (match int_of_string_opt (List.nth i 0) with
     | Some num -> num
     | None -> -1)
-    < 0
+    <= 0
     || (match int_of_string_opt (List.nth i 1) with
        | Some num -> num
        | None -> -1)
-       < 0
+       <= 0
   then false
   else true
 
