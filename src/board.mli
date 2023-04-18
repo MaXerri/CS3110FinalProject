@@ -30,3 +30,7 @@ val generate_from_bool_grid : bool list list -> board
 val dimensions : board -> int * int
 (** [dimensions brd] is a tuple [(m*n)] corresponding to [m] columns and [n]
     rows. *)
+
+val is_valid : board -> bool
+(** [dimensions brd] is a tuple [(m*n)] corresponding to [m] columns and [n]
+    rows. *)

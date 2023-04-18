@@ -1,4 +1,5 @@
 type board = {
+  validity : bool;
   grid : Cell.cell list list;
   m : int;
   n : int;
@@ -126,7 +127,13 @@ let parse_boolean_grid (grd_in : bool list list) =
 (*** Functions ****************************************************************)
 
 let clear_position brd (position : int * int) =
-  { brd with grid = mod_indof_grid Cell.clear position brd.grid }
+  try { brd with grid = mod_indof_grid Cell.clear_volatile position brd.grid }
+  with Cell.MineUncovered ->
+    {
+      brd with
+      grid = mod_indof_grid Cell.clear position brd.grid;
+      validity = false;
+    }
 
 let flag_position brd (position : int * int) =
   { brd with grid = mod_indof_grid Cell.flag position brd.grid }
@@ -135,6 +142,7 @@ let to_string_list brd : string list = string_of_board brd
 
 let generate m n =
   {
+    validity = true;
     grid =
       generate_grid_naive
         (fun a ->
@@ -147,6 +155,7 @@ let generate m n =
 
 let generate_from_bool_grid bool_grd =
   {
+    validity = true;
     grid = parse_boolean_grid bool_grd;
     m = List.length bool_grd;
     n =
@@ -156,5 +165,6 @@ let generate_from_bool_grid bool_grd =
   }
 
 let dimensions brd = (brd.m, brd.n)
+let is_valid brd = brd.validity
 
 (*this is a testing comment to check branches*)

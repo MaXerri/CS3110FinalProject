@@ -4,6 +4,8 @@
 
 type cell
 
+exception MineUncovered
+
 (*** Functions ****************************************************************)
 
 val generate : int -> cell
@@ -11,6 +13,9 @@ val generate : int -> cell
     [i]: | i = -1 -> Mine | i = 0 -> Empty | i > 0 -> [i] mines adjacent. *)
 
 val clear : cell -> cell
+(** [clear c] is the cell [c] after the player has attempted to clear it. *)
+
+val clear_volatile : cell -> cell
 (** [clear c] is the cell [c] after the player has attempted to clear it. *)
 
 val flag : cell -> cell

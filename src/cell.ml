@@ -13,6 +13,8 @@ type cell = {
   visibility : cell_visibility;
 }
 
+exception MineUncovered
+
 let generate i_of_type =
   match i_of_type with
   | -1 -> { c_type = Mine; visibility = Hidden }
@@ -47,3 +49,6 @@ let not_mine c =
   match c.c_type with
   | Mine -> true
   | _ -> false
+
+let clear_volatile c =
+  if not_mine c then { c with visibility = Cleared } else raise MineUncovered
