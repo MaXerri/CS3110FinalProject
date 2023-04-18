@@ -1,7 +1,9 @@
 open OUnit2
 open Minesweeper
+
 (* open Board *)
 open Cell
+
 (* open Command *)
 (* open State *)
 
@@ -36,10 +38,9 @@ let to_int_test (name : string) (input : cell) (expected_output : int) =
   name >:: fun _ ->
   assert_equal expected_output (to_int input) ~printer:string_of_int
 
-
-let to_char_test (name : string) (input : cell) (expected_output: char) = 
+let to_char_test (name : string) (input : cell) (expected_output : char) =
   name >:: fun _ ->
-    assert_equal expected_output (to_char input) ~printer: pp_charValue
+  assert_equal expected_output (to_char input) ~printer:pp_charValue
 
 (*Lists of tests*)
 let board_test = []
@@ -74,6 +75,7 @@ let cell_test =
     to_int_test "int of value -2 Cell" badCell (-2);
     to_int_test "int of max int cell" maxIntCell 1073741823;
     to_int_test "int of min int cell" minIntCell (-1073741824);
+    to_char_test "Mine Cell" mineCell 'X';
   ]
 
 let command_test = []
