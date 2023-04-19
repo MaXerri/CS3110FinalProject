@@ -1,5 +1,6 @@
 type board = {
   validity : bool;
+  remainingCells : int;
   grid : Cell.cell list list;
   m : int;
   n : int;
@@ -160,6 +161,7 @@ let to_string_list brd : string list = board_to_stringlist brd
 let generate m n =
   {
     validity = true;
+    remainingCells = m * n;
     grid =
       generate_naive_grid
         (fun a ->
@@ -179,6 +181,7 @@ let generate_from_bool_grid bool_grd =
       (match bool_grd with
       | h :: _ -> List.length h
       | _ -> raise (Failure "Invalid grid input (empty rows)"));
+    remainingCells = 0;
   }
 
 let dimensions brd = (brd.m, brd.n)
