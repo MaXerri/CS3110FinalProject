@@ -8,53 +8,65 @@ type board = {
 
 (*** Helper Functions *********************************************************)
 
-(**[mod_indof_list foi i lst] returns [lst] with the [i]th element of [lst]
-   modified by [foi]*)
-let rec mod_indof_list foi (ind : int) lst =
+(**[modify_list_index foi i lst] returns list [lst] with the [i]th element of
+   [lst] modified by function [foi]. Helper function used by
+   [modify_grid_index foi].*)
+let rec modify_list_index foi (ind : int) lst =
   match lst with
   | [] -> raise (Failure "Index out of bounds")
   | h :: t ->
-      if ind = 0 then foi h :: t else h :: mod_indof_list foi (ind - 1) t
+      if ind = 0 then foi h :: t else h :: modify_list_index foi (ind - 1) t
 
-(**[mod_indof_grid foi (m,n) grd] returns [grd] with the [n]th element of the
-   [m]th element of [grd] modified by [foi]*)
-let mod_indof_grid foi (ind : int * int) (grd : 'a list list) =
+(**[modify_grid_index foi (m,n) grd] returns grid [grd] with the [n]th element
+   of the [m]th element of [grd] modified by function [foi]. Used for
+   modification of single elements within grids.*)
+let modify_grid_index foi (ind : int * int) (grd : 'a list list) =
   match ind with
-  | m, n -> mod_indof_list (mod_indof_list foi n) m grd
+  | m, n -> modify_list_index (modify_list_index foi n) m grd
 
-(***)
-let rec generate_list controller (l : int) =
-  if l = 0 then [] else controller true :: generate_list controller (l - 1)
+(**[generate_naive_list controller l] generates a list of length [l] with
+   elements produced by the function [controller], which generates a value when
+   passed a boolean. Useful in the generation of grids for play.*)
+let rec generate_naive_list controller (l : int) =
+  if l = 0 then [] else controller true :: generate_naive_list controller (l - 1)
 
-let generate_grid_naive controller (m : int) (n : int) =
-  generate_list (fun a -> if a then generate_list controller n else []) m
+(**[generate_naive_grid controller m n] generates a grid of length [m] with
+   lists of length [n] , and elements produced by the function [controller],
+   which generates a value when passed a boolean. Useful in the generation of
+   grids for play.*)
+let generate_naive_grid controller (m : int) (n : int) =
+  generate_naive_list
+    (fun a -> if a then generate_naive_list controller n else [])
+    m
 
-(**Returns string corresponding to character [c]*)
-let s_of_c c = String.make 1 c
+(**[char_to_string c] is the string corresponding to character [c]*)
+let char_to_string c = String.make 1 c
 
-(**Returns the string representation of the row [row]*)
+(**[string_of_row row] is the string representation of a cell grid row [row]*)
 let rec string_of_row (row : Cell.cell list) : string =
   match row with
   | [] -> ""
-  | h :: t -> s_of_c (Cell.to_char h) ^ " " ^ string_of_row t
+  | h :: t -> char_to_string (Cell.to_char h) ^ " " ^ string_of_row t
 
-(**Returns row header for given index*)
+(**[row_of_int i] is the row header for given index [i], as designated for a
+   gameboard. Example: row 0 has header A, row 1 has header B*)
 let row_of_int i =
-  if i < 27 then s_of_c (Char.chr (i + 65)) ^ " "
+  if i < 27 then char_to_string (Char.chr (i + 65)) ^ " "
   else raise (Failure "integer out of numerical index")
 
-(**Returns a list of strings representing the rows of a game board which contain
-   cells*)
-let string_of_board brd =
-  (*Helper function 1*)
+(**[board_to_stringlist brd] is a string list representing the rows of a game
+   board [brd]*)
+let board_to_stringlist brd =
+  (*[labels_of_width w] generates a string of row labels of length [w]*)
   let labels_of_width w =
     let rec labels_of_width_helper i : string =
       if i > w then "" else row_of_int i ^ labels_of_width_helper (i + 1)
     in
     labels_of_width_helper 0
   in
-  (*Helper function 2*)
-  let rec string_of_brdGrd_helper (ind : int) (grid : Cell.cell list list) :
+  (*Recursive function which handles primary functions of
+    [board_to_stringlist]*)
+  let rec rec_board_to_stringlist (ind : int) (grid : Cell.cell list list) :
       string list =
     match grid with
     | [] -> []
@@ -64,12 +76,15 @@ let string_of_board brd =
         :: [ "   " ^ labels_of_width (brd.n - 1) ]
     | h :: t ->
         (row_of_int ind ^ " " ^ string_of_row h)
-        :: string_of_brdGrd_helper (ind + 1) t
+        :: rec_board_to_stringlist (ind + 1) t
   in
-  string_of_brdGrd_helper 0 brd.grid
+  rec_board_to_stringlist 0 brd.grid
 
+(**[parse_boolean_lists above at below] is a Cell.cell list with appropriately
+   labeled cells (int, mine, etc) representative of the list [at]. Used as a
+   helper function by [parse_boolean_grid].*)
 let parse_boolean_lists above at below =
-  (*Internal helper 1*)
+  (*Helper function converts boolean lists into integer lists*)
   let bool_list_to_int b_list =
     let bool_inc b i = if b then i + 1 else i in
     let rec b_list_parse blst =
@@ -103,6 +118,7 @@ let parse_boolean_lists above at below =
   (*Execution*)
   pbl_helper above at below
 
+(**[gen_false_list len] is a boolean list of [false] values of length [len]*)
 let rec gen_false_list (len : int) =
   if len < 0 then [] else false :: gen_false_list (len - 1)
 
@@ -127,24 +143,25 @@ let parse_boolean_grid (grd_in : bool list list) =
 (*** Functions ****************************************************************)
 
 let clear_position brd (position : int * int) =
-  try { brd with grid = mod_indof_grid Cell.clear_volatile position brd.grid }
+  try
+    { brd with grid = modify_grid_index Cell.clear_volatile position brd.grid }
   with Cell.MineUncovered ->
     {
       brd with
-      grid = mod_indof_grid Cell.clear position brd.grid;
+      grid = modify_grid_index Cell.clear position brd.grid;
       validity = false;
     }
 
 let flag_position brd (position : int * int) =
-  { brd with grid = mod_indof_grid Cell.flag position brd.grid }
+  { brd with grid = modify_grid_index Cell.flag position brd.grid }
 
-let to_string_list brd : string list = string_of_board brd
+let to_string_list brd : string list = board_to_stringlist brd
 
 let generate m n =
   {
     validity = true;
     grid =
-      generate_grid_naive
+      generate_naive_grid
         (fun a ->
           if a then Cell.generate 0
           else raise (Failure "Poorly defined controller"))
