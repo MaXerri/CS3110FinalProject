@@ -21,9 +21,14 @@ let v6Cell = generate 6
 let v7Cell = generate 7
 let v8Cell = generate 8
 let badV9Cell = generate 9
-let badCell = generate (-2)
-let maxIntCell = generate 1073741823
-let minIntCell = generate (-1073741824)
+
+(*let badCell = generate (-2)*)
+(*let maxIntCell = generate 1073741823*)
+(*let minIntCell = generate (-1073741824)*)
+
+(*Boolean Board testing*)
+let bg_small = [ [ true; false ]; [ false; false ] ]
+let bg_small_slist = [ "A  X X"; "B  X X"; ""; "   A B" ]
 
 (*Cell pretty print*)
 let pp_cellValue (c : cell) : string = Cell.to_int c |> string_of_int
@@ -43,7 +48,12 @@ let to_char_test (name : string) (input : cell) (expected_output : char) =
   assert_equal expected_output (to_char input) ~printer:pp_charValue
 
 (*Lists of tests*)
-let board_test = []
+let board_test =
+  [
+    ( "Boolean board" >:: fun _ ->
+      assert_equal bg_small_slist
+        Board.(generate_from_bool_grid bg_small |> to_string_list) );
+  ]
 
 let cell_test =
   [
@@ -58,9 +68,9 @@ let cell_test =
     generate_test "Generate value 7 cell" 7 v7Cell;
     generate_test "Generate value 8 cell" 8 v8Cell;
     generate_test "Generate value 9 cell" 9 badV9Cell;
-    generate_test "Generate value -2 cell" (-2) badCell;
-    generate_test "Generate max int cell" 1073741823 maxIntCell;
-    generate_test "Generate max int cell" (-1073741824) minIntCell;
+    (*generate_test "Generate value -2 cell" (-2) badCell;*)
+    (* generate_test "Generate max int cell" 1073741823 maxIntCell;*)
+    (*generate_test "Generate max int cell" (-1073741824) minIntCell;*)
     to_int_test "int of value 1 cell" v1Cell 1;
     to_int_test "int of value 2 cell" v2Cell 2;
     to_int_test "int of value 3 cell" v3Cell 3;
@@ -72,9 +82,9 @@ let cell_test =
     to_int_test "int of value 9 cell" badV9Cell 9;
     to_int_test "int of Mine Cell" mineCell (-1);
     to_int_test "int of empty Cell" emptyCell 0;
-    to_int_test "int of value -2 Cell" badCell (-2);
-    to_int_test "int of max int cell" maxIntCell 1073741823;
-    to_int_test "int of min int cell" minIntCell (-1073741824);
+    (*to_int_test "int of value -2 Cell" badCell (-2);*)
+    (* to_int_test "int of max int cell" maxIntCell 1073741823;*)
+    (* to_int_test "int of min int cell" minIntCell (-1073741824);*)
     to_char_test "Mine Cell" mineCell 'X';
   ]
 

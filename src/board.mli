@@ -32,5 +32,9 @@ val dimensions : board -> int * int
     rows. *)
 
 val is_valid : board -> bool
-(** [dimensions brd] is a tuple [(m*n)] corresponding to [m] columns and [n]
-    rows. *)
+(** [is_valid brd] is a boolean declaring whether a board is valid (if the
+    player has not attempted to clear any mined cells). *)
+
+val is_complete : board -> bool
+(** [is_complete brd] is a boolean declaring whether a board is complete (all
+    non-mined cells have been cleared) *)

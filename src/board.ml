@@ -141,11 +141,32 @@ let parse_boolean_grid (grd_in : bool list list) =
   in
   parse_grid grd_app
 
+(**Counts the number of true elements in a grid of boolean values. Useful for
+   counting the number of mines in a board generated from a boolean grid.*)
+let count_true_bool_grid (bgrid : bool list list) : int =
+  let rec count_true_bool_list blist =
+    match blist with
+    | [] -> 0
+    | h :: t ->
+        let tail = count_true_bool_list t in
+        if h then 1 + tail else tail
+  in
+  let rec rec_count_true_bool_grid bg =
+    match bg with
+    | [] -> 0
+    | h :: t -> count_true_bool_list h + rec_count_true_bool_grid t
+  in
+  rec_count_true_bool_grid bgrid
+
 (*** Functions ****************************************************************)
 
 let clear_position brd (position : int * int) =
   try
-    { brd with grid = modify_grid_index Cell.clear_volatile position brd.grid }
+    {
+      brd with
+      grid = modify_grid_index Cell.clear_volatile position brd.grid;
+      remainingCells = brd.remainingCells - 1;
+    }
   with Cell.MineUncovered ->
     {
       brd with
@@ -173,18 +194,22 @@ let generate m n =
   }
 
 let generate_from_bool_grid bool_grd =
+  let cols = List.length bool_grd in
+  let rows =
+    match bool_grd with
+    | h :: _ -> List.length h
+    | _ -> raise (Failure "Invalid grid input (empty rows)")
+  in
   {
     validity = true;
     grid = parse_boolean_grid bool_grd;
-    m = List.length bool_grd;
-    n =
-      (match bool_grd with
-      | h :: _ -> List.length h
-      | _ -> raise (Failure "Invalid grid input (empty rows)"));
-    remainingCells = 0;
+    m = cols;
+    n = rows;
+    remainingCells = (cols * rows) - count_true_bool_grid bool_grd;
   }
 
 let dimensions brd = (brd.m, brd.n)
 let is_valid brd = brd.validity
+let is_complete brd = brd.remainingCells = 0
 
 (*this is a testing comment to check branches*)
