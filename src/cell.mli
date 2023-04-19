@@ -5,6 +5,7 @@
 type cell
 
 exception MineUncovered
+exception IntegerInputOutOfRange
 
 (*** Functions ****************************************************************)
 
