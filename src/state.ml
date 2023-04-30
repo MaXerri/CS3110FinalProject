@@ -1,11 +1,21 @@
+type g_over =
+  | Won
+  | Lost
+  | Play
+
 type t = {
   current_board : Board.board;
-  game_over : bool;
+  game_over : g_over;
 }
 
-let init_state m n = { current_board = Board.generate m n; game_over = false }
+let init_state m n = { current_board = Board.generate m n; game_over = Play }
 let get_current_board st = st.current_board
-let is_game_over st = st.game_over
+
+let is_game_over st =
+  match st.game_over with
+  | Won -> Won
+  | Lost -> Lost
+  | Play -> Play
 
 type result =
   | Legal of t
@@ -47,13 +57,19 @@ let clear input st : result =
   let i = String.split_on_char ' ' input in
   if valid_size input st = false then Illegal
   else
+    let b =
+      Board.clear_position st.current_board
+        (int_of_string (List.nth i 0), int_of_string (List.nth i 1))
+    in
     Legal
       {
-        current_board =
-          Board.clear_position st.current_board
-            (int_of_string (List.nth i 0), int_of_string (List.nth i 1));
-        (*Call Board.clear when implemented*)
-        game_over = false (*fix this eventually*);
+        current_board = b;
+        (* Switch to just falses for testing purposes*)
+        game_over =
+          (if Board.is_complete b then Won
+          else if Board.is_valid b then Lost
+            (*should be not is_valid but there is some error atm*)
+          else Play);
       }
 
 let flag input st : result =
@@ -65,6 +81,5 @@ let flag input st : result =
         current_board =
           Board.flag_position st.current_board
             (int_of_string (List.nth i 0), int_of_string (List.nth i 1));
-        (*Call Board.clear when implemented*)
-        game_over = false (*fix this eventually*);
+        game_over = Play;
       }

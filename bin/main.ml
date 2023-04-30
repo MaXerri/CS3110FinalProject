@@ -108,7 +108,7 @@ let rec advance_game st =
 let rec progress st =
   let x = advance_game st in
   match Minesweeper.State.is_game_over x with
-  | false ->
+  | Minesweeper.State.Play ->
       print_board_helper
         (Minesweeper.Board.to_string_list
            (Minesweeper.State.get_current_board x));
@@ -116,7 +116,8 @@ let rec progress st =
       print_endline "Enter a command";
       print_string "> ";
       progress x
-  | true -> print_endline "Game Over"
+  | Minesweeper.State.Lost -> print_endline "You have Lost"
+  | Minesweeper.State.Won -> print_endline "You Have Won"
 (*This will need to be changed eventually*)
 
 (** [main ()] prompts for the game to play, then starts it. *)
