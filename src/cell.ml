@@ -51,8 +51,8 @@ let to_int c =
 
 let not_mine c =
   match c.c_type with
-  | Mine -> true
-  | _ -> false
+  | Mine -> false
+  | _ -> true
 
 let clear_volatile c =
   if not_mine c then { c with visibility = Cleared } else raise MineUncovered
