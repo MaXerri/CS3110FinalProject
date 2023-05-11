@@ -12,7 +12,7 @@ type board = {
 (**[modify_list_index foi i lst] returns list [lst] with the [i]th element of
    [lst] modified by function [foi]. Helper function used by
    [modify_grid_index foi].*)
-let rec modify_list_index foi (ind : int) lst =
+let rec modify_list_index (foi : 'a -> 'a) (ind : int) lst : 'a list =
   match lst with
   | [] -> raise (Failure "Index out of bounds")
   | h :: t ->
@@ -85,9 +85,10 @@ let board_to_stringlist brd =
    labeled cells (int, mine, etc) representative of the list [at]. Used as a
    helper function by [parse_boolean_grid].*)
 let parse_boolean_lists above at below =
-  (*Helper function converts boolean lists into integer lists*)
+  (*Helper function counts the number of true values in a boolean list*)
   let bool_list_to_int b_list =
     let bool_inc b i = if b then i + 1 else i in
+    (*Recursively counts booleans using [bool_list_to_int]*)
     let rec b_list_parse blst =
       match blst with
       | [] -> 0
@@ -95,7 +96,8 @@ let parse_boolean_lists above at below =
     in
     b_list_parse b_list
   in
-  (*Internal helper 2*)
+  (*Recursive helper which handles functionality; Returns a bool list two units
+    shorter than its input*)
   let rec pbl_helper (above : bool list) (at : bool list) (below : bool list) =
     match (above, at, below) with
     | [ h0; h1 ], [ i0; i1 ], [ j0; j1 ] ->
@@ -114,28 +116,37 @@ let parse_boolean_lists above at below =
     | [ h1 ], [ i1 ], [ j1 ] -> (
         match (h1, i1, j1) with
         | _ -> raise (Failure {|Single member lists "Internal helper 2"|}))
-    | _, _, _ -> []
+    | _, _, _ ->
+        raise
+          (Failure
+             {|Improper parsing in Board.parse_boolean_lists "Internal helper 2"|})
   in
-
   (*Execution*)
   pbl_helper above at below
 
 (**[gen_false_list len] is a boolean list of [false] values of length [len]*)
 let rec gen_false_list (len : int) =
-  if len < 0 then [] else false :: gen_false_list (len - 1)
+  if len <= 0 then [] else false :: gen_false_list (len - 1)
 
 let parse_boolean_grid (grd_in : bool list list) =
+  (*Count the number of columns in [grid_in]*)
   let cols =
     match grd_in with
     | h :: _ -> List.length h
     | [] -> 0
   in
+  (*Generate a list of false values the same length as cols*)
   let f_list = gen_false_list cols in
-  let grd_app = f_list :: grd_in in
+  (*Add false list to top and bottom of grid*)
+  let grd_app = (f_list :: grd_in) @ [ f_list ] in
+  (*Create recursive helper function which parses the grid*)
   let rec parse_grid grd : Cell.cell list list =
     match grd with
     | r0 :: r1 :: r2 :: t ->
-        parse_boolean_lists (false :: r0) (false :: r1) (false :: r2)
+        parse_boolean_lists
+          ((false :: r0) @ [ false ])
+          ((false :: r1) @ [ false ])
+          ((false :: r2) @ [ false ])
         :: parse_grid (r1 :: r2 :: t)
     | [ r0; r1 ] -> [ parse_boolean_lists r0 r1 f_list ]
     | _ -> raise (Failure "Unnaccounted for failure in parse_boolean_grid")
