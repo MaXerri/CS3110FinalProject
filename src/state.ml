@@ -67,7 +67,7 @@ let clear input st : result =
         (* Switch to just falses for testing purposes*)
         game_over =
           (if Board.is_complete b then Won
-          else if Board.is_valid b then Lost
+          else if Board.is_valid b = false then Lost
             (*should be not is_valid but there is some error atm*)
           else Play);
       }
