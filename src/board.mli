@@ -27,6 +27,10 @@ val generate_from_bool_grid : bool list list -> board
 (** [generate_from_bool_grid grd] is a board with mines at locations
     corresponding to true values in [grd]. *)
 
+val int_grid_to_bool_grid : int list list -> bool list list
+(** [int_grid_to_bool_grid int_grid] is a boolean grid corresponding to the 1s
+    and 0s in [int_grid]. *)
+
 val dimensions : board -> int * int
 (** [dimensions brd] is a tuple [(m*n)] corresponding to [m] columns and [n]
     rows. *)
@@ -38,3 +42,7 @@ val is_valid : board -> bool
 val is_complete : board -> bool
 (** [is_complete brd] is a boolean declaring whether a board is complete (all
     non-mined cells have been cleared) *)
+
+val mines_left : board -> int
+(** [mines_left brd] is an int denoting the number of mines which have not yet
+    been uncovered*)

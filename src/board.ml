@@ -208,8 +208,24 @@ let generate_from_bool_grid bool_grd =
     remainingCells = (cols * rows) - count_true_bool_grid bool_grd;
   }
 
+let rec int_grid_to_bool_grid int_grid =
+  let rec int_list_to_bool_list int_list =
+    match int_list with
+    | h :: t ->
+        (match h with
+        | 1 -> true
+        | 0 -> false
+        | _ -> failwith "Invalid Int Grid")
+        :: int_list_to_bool_list t
+    | [] -> []
+  in
+  match int_grid with
+  | h :: t -> int_list_to_bool_list h :: int_grid_to_bool_grid t
+  | [] -> []
+
 let dimensions brd = (brd.m, brd.n)
 let is_valid brd = brd.validity
 let is_complete brd = brd.remainingCells = 0
+let mines_left brd = brd.remainingCells
 
 (*this is a testing comment to check branches*)
