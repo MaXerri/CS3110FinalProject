@@ -17,6 +17,7 @@ let init_state m n =
   }
 (*remember to change the board size back*)
 
+let initial_state_test b = { current_board = b; game_over = Play }
 let get_current_board st = st.current_board
 
 let is_game_over st =

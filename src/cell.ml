@@ -21,7 +21,7 @@ let generate i_of_type =
   | -1 -> { c_type = Mine; visibility = Hidden }
   | 0 -> { c_type = Empty; visibility = Hidden }
   | a ->
-      if a > 0 && a < 10 then
+      if a > 0 && a < 9 then
         { c_type = Adjacent i_of_type; visibility = Hidden }
       else raise IntegerInputOutOfRange
 

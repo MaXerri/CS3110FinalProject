@@ -8,7 +8,7 @@ type object_phrase = int * int
 
 (** The type [command] represents a player command that is decomposed into a
     verb and possibly an object phrase. Invariant: the [object_phrase] carried
-    by [Clear] must not be empty. *)
+    by [Clear] and [Flag] must not be empty. *)
 type command =
   | Clear of object_phrase
   | Flag of object_phrase
