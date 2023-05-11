@@ -111,11 +111,15 @@ let parse_boolean_lists above at below =
             Cell.generate (bool_list_to_int [ h0; h1; h2; i0; i2; j0; j1; j2 ])
         in
         c :: pbl_helper (h1 :: h2 :: t_ab) (i1 :: i2 :: t_at) (j1 :: j2 :: t_bl)
+    | [ h1 ], [ i1 ], [ j1 ] -> (
+        match (h1, i1, j1) with
+        | _ -> raise (Failure {|Single member lists "Internal helper 2"|}))
     | _, _, _ ->
         raise
           (Failure
              {|Improper parsing in Board.parse_boolean_lists "Internal helper 2"|})
   in
+
   (*Execution*)
   pbl_helper above at below
 
