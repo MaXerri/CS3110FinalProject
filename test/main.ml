@@ -86,6 +86,13 @@ let cell_test =
     (* to_int_test "int of max int cell" maxIntCell 1073741823;*)
     (* to_int_test "int of min int cell" minIntCell (-1073741824);*)
     to_char_test "Mine Cell" mineCell 'X';
+    (*Mario tests*)
+    to_char_test "Non Mine" v1Cell 'X';
+    to_char_test "emptycell to_char" emptyCell 'X';
+    to_char_test "cleared empty cell to char" (clear emptyCell) '_';
+    to_char_test "cleared non_mine cell to char" (clear v1Cell) '1';
+    to_char_test "cleared mine to char" (clear mineCell) '!';
+    to_char_test "flagged cell " (flag v1Cell) '?';
   ]
 
 let command_test = []

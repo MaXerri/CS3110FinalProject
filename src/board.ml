@@ -114,10 +114,7 @@ let parse_boolean_lists above at below =
     | [ h1 ], [ i1 ], [ j1 ] -> (
         match (h1, i1, j1) with
         | _ -> raise (Failure {|Single member lists "Internal helper 2"|}))
-    | _, _, _ ->
-        raise
-          (Failure
-             {|Improper parsing in Board.parse_boolean_lists "Internal helper 2"|})
+    | _, _, _ -> []
   in
 
   (*Execution*)

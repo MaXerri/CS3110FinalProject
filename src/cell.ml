@@ -39,7 +39,7 @@ let to_char c =
       match c.c_type with
       | Mine -> '!'
       | Empty -> '_'
-      | Adjacent i -> char_of_int i)
+      | Adjacent i -> char_of_int (i + 48))
   | Flagged -> '?'
   | Hidden -> 'X'
 

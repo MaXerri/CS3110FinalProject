@@ -8,7 +8,15 @@ type t = {
   game_over : g_over;
 }
 
-let init_state m n = { current_board = Board.generate m n; game_over = Play }
+let init_state m n =
+  {
+    current_board = Board.generate_from_bool_grid Boolean_test_boards.bb_1;
+    game_over =
+      (match (m, n) with
+      | _ -> Play);
+  }
+(*remember to change the board size back*)
+
 let get_current_board st = st.current_board
 
 let is_game_over st =
