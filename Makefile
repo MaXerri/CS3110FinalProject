@@ -18,6 +18,10 @@ doc:
 opendoc: doc
 	@bash opendoc.sh
 
+cloc:
+	cloc --by-file --include-lang=OCaml --exclude-dir=_build .
+
+
 zip:
 	rm -f finalproject.zip
 	zip -r finalproject.zip . -x@exclude.lst
