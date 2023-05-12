@@ -69,7 +69,6 @@ let v5Cell = generate 5
 let v6Cell = generate 6
 let v7Cell = generate 7
 let v8Cell = generate 8
-let badV9Cell = generate 9
 
 (*let badCell = generate (-2)*)
 (*let maxIntCell = generate 1073741823*)
@@ -77,11 +76,17 @@ let badV9Cell = generate 9
 
 (*Boolean Board testing*)
 let bg_small = [ [ true; false ]; [ false; false ] ]
-let bg_small_slist = [ "A  X X"; "B  X X"; ""; "   A B" ]
+let bg_small_slist = [ "A  X X "; "B  X X "; ""; "   A B " ]
 
 (*switches the arguments of Board.clear_position to allow for pipelining*)
 let clear_rev t b = Board.clear_position b t
 let flag_rev t b = Board.flag_position b t
+
+(*2d list printer*)
+let rec pp_lst lst =
+  match lst with
+  | [] -> "]"
+  | h :: t -> h ^ "; " ^ pp_lst t
 
 let bb2 =
   let bb_int_1 =
@@ -155,28 +160,84 @@ let b_clear_flagged =
 let b_gen = Board.generate 4 4
 
 let b_won_vis_board =
-  [ "A  X _ _ _"; "B  _ X _ _"; "C  _ _ X _"; "D  _ _ _ X"; "   A B C D" ]
+  [
+    "A  X 2 1 _ ";
+    "B  2 X 2 1 ";
+    "C  1 2 X 2 ";
+    "D  _ 1 2 X ";
+    "";
+    "   A B C D ";
+  ]
 
 let still_playing_vis_board =
-  [ "A  X 2 1 _"; "B  _ X 2 X"; "C  X X X X"; "D  X X X X"; "   A B C D" ]
+  [
+    "A  X 2 1 _ ";
+    "B  X X 2 X ";
+    "C  X X X X ";
+    "D  X X X X ";
+    "";
+    "   A B C D ";
+  ]
 
 let start_vis_board =
-  [ "A  X X X X"; "B  X X X X"; "C  X X X X"; "D  X X X X"; "   A B C D" ]
+  [
+    "A  X X X X ";
+    "B  X X X X ";
+    "C  X X X X ";
+    "D  X X X X ";
+    "";
+    "   A B C D ";
+  ]
 
 let b_vis_max_adjacent_bomb =
-  [ "A  X X X X"; "B  X 8 X X"; "C  X X X X"; "D  X X X X"; "   A B C D" ]
+  [
+    "A  X X X X ";
+    "B  X 8 X X ";
+    "C  X X X X ";
+    "D  X X X X ";
+    "";
+    "   A B C D ";
+  ]
 
 let b_vis_1flag =
-  [ "A  X 2 1 _"; "B  ? X X X"; "C  X X X X"; "D  X X X X"; "   A B C D" ]
+  [
+    "A  X 2 1 _ ";
+    "B  ? X X X ";
+    "C  X X X X ";
+    "D  X X X X ";
+    "";
+    "   A B C D ";
+  ]
 
 let b_vis_remove_flag =
-  [ "A  X 2 1 _"; "B  X X X X"; "C  X X X X"; "D  X X X X"; "   A B C D" ]
+  [
+    "A  X 2 1 _ ";
+    "B  X X X X ";
+    "C  X X X X ";
+    "D  X X X X ";
+    "";
+    "   A B C D ";
+  ]
 
 let b_vis_flag_cleared =
-  [ "A  X 2 1 _"; "B  X X X X"; "C  X X X X"; "D  X X X X"; "   A B C D" ]
+  [
+    "A  X 2 1 _ ";
+    "B  X X X X ";
+    "C  X X X X ";
+    "D  X X X X ";
+    "";
+    "   A B C D ";
+  ]
 
 let b_vis_clear_flagged =
-  [ "A  X 2 1 _"; "B  X X X X"; "C  X X X X"; "D  X X X X"; "   A B C D" ]
+  [
+    "A  X 2 1 _ ";
+    "B  X X X X ";
+    "C  X X X X ";
+    "D  X X X X ";
+    "";
+    "   A B C D ";
+  ]
 
 (*Lists of tests*)
 let board_test =
@@ -197,7 +258,8 @@ let board_test =
       assert_equal true (b_not_complete |> Board.is_valid) );
     ( "testing board mid game" >:: fun _ ->
       assert_equal still_playing_vis_board
-        (b_not_complete |> Board.to_string_list) );
+        (b_not_complete |> Board.to_string_list)
+        ~printer:pp_lst );
     ( "testing board at start of game" >:: fun _ ->
       assert_equal start_vis_board (b_start |> Board.to_string_list) );
     ( "testing case where 8 bombs surround clear cell" >:: fun _ ->
@@ -218,6 +280,10 @@ let board_test =
       assert_equal false (b_gen |> Board.is_complete) );
     ( "testing genrated board that it is valid" >:: fun _ ->
       assert_equal true (b_gen |> Board.is_valid) );
+    ( "testing clear flagged spot " >:: fun _ ->
+      assert_equal b_vis_clear_flagged
+        (b_clear_flagged |> Board.to_string_list)
+        ~printer:pp_lst );
   ]
 
 (*Cell pretty print*)
@@ -249,7 +315,6 @@ let cell_test =
     generate_test "Generate value 6 cell" 6 v6Cell;
     generate_test "Generate value 7 cell" 7 v7Cell;
     generate_test "Generate value 8 cell" 8 v8Cell;
-    generate_test "Generate value 9 cell" 9 badV9Cell;
     (*generate_test "Generate value -2 cell" (-2) badCell;*)
     (* generate_test "Generate max int cell" 1073741823 maxIntCell;*)
     (*generate_test "Generate max int cell" (-1073741824) minIntCell;*)
@@ -261,7 +326,6 @@ let cell_test =
     to_int_test "int of value 6 cell" v6Cell 6;
     to_int_test "int of value 7 cell" v7Cell 7;
     to_int_test "int of value 8 cell" v8Cell 8;
-    to_int_test "int of value 9 cell" badV9Cell 9;
     to_int_test "int of Mine Cell" mineCell (-1);
     to_int_test "int of empty Cell" emptyCell 0;
     (*to_int_test "int of value -2 Cell" badCell (-2);*)
@@ -276,6 +340,8 @@ let cell_test =
     to_char_test "cleared mine to char" (clear mineCell) '!';
     to_char_test "flagged cell " (flag v1Cell) '?';
     to_char_test "cleared non_mine cell to char" (clear v3Cell) '3';
+    ( "non integer args clear" >:: fun _ ->
+      assert_raises Cell.IntegerInputOutOfRange (fun () -> generate 9) );
   ]
 
 let parse_tester (name : string) (input : string)
@@ -298,7 +364,7 @@ let command_test =
     ( "invalid clear with more than 2 arg" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "clear 0 0 0") );
     ( "clear with 0 args" >:: fun _ ->
-      assert_raises Command.Empty (fun () -> Command.parse "clear") );
+      assert_raises Command.Malformed (fun () -> Command.parse "clear") );
     ( "invalid flag with one arg" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "flag 0") );
     ( "invalid flag with more than 2 arg" >:: fun _ ->
@@ -318,32 +384,41 @@ let command_test =
 (*extracts the state from Result type output of State.clear*)
 let get_clear str st =
   match State.clear str st with
-  | Legal st -> st
+  | Legal sta -> sta
+  | Illegal -> failwith "Fix the invalid input in test file"
+
+let get_flag str st =
+  match State.flag str st with
+  | Legal sta -> sta
   | Illegal -> failwith "Fix the invalid input in test file"
 
 let s2 =
   State.initial_state_test (Board.generate_from_bool_grid bb2)
-  |> get_clear "clear 0 1" |> get_clear "clear 0 2" |> get_clear "clear 0 3"
-  |> get_clear "clear 1 0" |> get_clear "clear 1 2" |> get_clear "clear 1 3"
-  |> get_clear "clear 2 0" |> get_clear "clear 2 1" |> get_clear "clear 2 3"
-  |> get_clear "clear 3 0" |> get_clear "clear 3 1" |> get_clear "clear 3 2"
+  |> get_clear "0 1" |> get_clear "0 2" |> get_clear "0 3" |> get_clear "1 0"
+  |> get_clear "1 2" |> get_clear "1 3" |> get_clear "2 0" |> get_clear "2 1"
+  |> get_clear "2 3" |> get_clear "3 0" |> get_clear "3 1" |> get_clear "3 2"
 
 let s3 =
   State.initial_state_test (Board.generate_from_bool_grid bb2)
-  |> get_clear "clear 0 1" |> get_clear "clear 0 2" |> get_clear "clear 0 0"
+  |> get_clear "0 1" |> get_clear "0 2" |> get_clear "0 0"
 
 let s4 =
   State.initial_state_test (Board.generate_from_bool_grid bb2)
-  |> get_clear "clear 0 1" |> get_clear "clear 0 2" |> get_clear "clear 1 3"
+  |> get_clear "0 1" |> get_clear "0 2" |> get_clear "1 3"
+
+let s5 = s4 |> get_flag "0 0"
 
 let state_test =
   [
     ("win state" >:: fun _ -> assert_equal State.Won (State.is_game_over s2));
     ("lose state" >:: fun _ -> assert_equal State.Lost (State.is_game_over s3));
     ("lose state" >:: fun _ -> assert_equal State.Play (State.is_game_over s4));
+    ( "flag on bomb is valid" >:: fun _ ->
+      assert_equal State.Play (State.is_game_over s5) );
     ( "test get_board" >:: fun _ ->
       assert_equal b_won_vis_board
-        (State.get_current_board s2 |> Board.to_string_list) );
+        (State.get_current_board s2 |> Board.to_string_list)
+        ~printer:pp_lst );
   ]
 
 let suite =
