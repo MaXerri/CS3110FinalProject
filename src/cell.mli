@@ -6,6 +6,7 @@ type cell
 
 exception MineUncovered
 exception IntegerInputOutOfRange
+exception ReclearAttempted
 
 (*** Functions ****************************************************************)
 

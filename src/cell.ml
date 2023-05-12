@@ -15,6 +15,7 @@ type cell = {
 
 exception MineUncovered
 exception IntegerInputOutOfRange
+exception ReclearAttempted
 
 let generate i_of_type =
   match i_of_type with
@@ -64,6 +65,9 @@ let clear_volatile c =
 
 let clear_volatile_cascade (emt : bool ref) (c : cell) : cell =
   if not_mine c then (
-    emt := is_empty c;
-    { c with visibility = Cleared })
+    match c.visibility with
+    | Cleared -> raise ReclearAttempted
+    | _ ->
+        emt := is_empty c;
+        { c with visibility = Cleared })
   else raise MineUncovered

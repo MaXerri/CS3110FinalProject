@@ -227,23 +227,28 @@ let rec range_clear (brd : board) (position : int * int) (range : int list) =
         (*if so then check if proposed position is empty*)
         let bd_poss =
           try
-            {
-              brd with
-              grid =
-                modify_grid_index
-                  (Cell.clear_volatile_cascade emt)
-                  next_check brd.grid;
-              remainingCells = brd.remainingCells - 1;
-            }
-          with Cell.MineUncovered -> brd
+            Some
+              {
+                brd with
+                grid =
+                  modify_grid_index
+                    (Cell.clear_volatile_cascade emt)
+                    next_check brd.grid;
+                remainingCells = brd.remainingCells - 1;
+              }
+          with
+          | Cell.MineUncovered -> None
+          | Cell.ReclearAttempted -> None
         in
         (*Clear if cell is empty, continue through range otherwise*)
-        if !emt then
-          range_clear
-            (range_clear bd_poss next_check
-               [ abs (h - 1); h; abs (h + 1) mod 8 ])
-            position t
-        else range_clear bd_poss position t (*Else continue through range*)
+        match bd_poss with
+        | None -> range_clear brd position t
+        | Some bd_poss ->
+            if !emt then
+              range_clear
+                (range_clear bd_poss next_check [ 0; 1; 2; 3; 4; 5; 6; 7 ])
+                position t
+            else range_clear bd_poss position t (*Else continue through range*)
       else range_clear brd position t
 
 (*** Functions ****************************************************************)
@@ -258,12 +263,16 @@ and clear_position brd (position : int * int) =
           modify_grid_index (Cell.clear_volatile_cascade emt) position brd.grid;
         remainingCells = brd.remainingCells - 1;
       }
-    with Cell.MineUncovered ->
-      {
-        brd with
-        grid = modify_grid_index Cell.clear position brd.grid;
-        validity = false;
-      }
+    with
+    | Cell.MineUncovered ->
+        {
+          brd with
+          grid = modify_grid_index Cell.clear position brd.grid;
+          validity = false;
+        }
+    | Cell.ReclearAttempted ->
+        emt := false;
+        brd
   in
   if not !emt then bd else range_clear bd position [ 0; 1; 2; 3; 4; 5; 6; 7 ]
 
@@ -273,7 +282,7 @@ let flag_position brd (position : int * int) =
 let to_string_list brd : string list = board_to_stringlist brd
 
 let generate m n =
-  match generate_random_grid m n (m * n / 9) with
+  match generate_random_grid m n (m * n / 12) with
   | grd, ct ->
       { validity = true; grid = grd; remainingCells = (m * n) - ct; m; n }
 
