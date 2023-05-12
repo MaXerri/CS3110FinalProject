@@ -172,7 +172,7 @@ let b_won_vis_board =
 let still_playing_vis_board =
   [
     "A  X 2 1 _ ";
-    "B  X X 2 X ";
+    "B  X X 2 1 ";
     "C  X X X X ";
     "D  X X X X ";
     "";
@@ -202,7 +202,7 @@ let b_vis_max_adjacent_bomb =
 let b_vis_1flag =
   [
     "A  X 2 1 _ ";
-    "B  ? X X X ";
+    "B  ? X 2 1 ";
     "C  X X X X ";
     "D  X X X X ";
     "";
@@ -212,7 +212,7 @@ let b_vis_1flag =
 let b_vis_remove_flag =
   [
     "A  X 2 1 _ ";
-    "B  X X X X ";
+    "B  X X 2 1 ";
     "C  X X X X ";
     "D  X X X X ";
     "";
@@ -222,7 +222,7 @@ let b_vis_remove_flag =
 let b_vis_flag_cleared =
   [
     "A  X 2 1 _ ";
-    "B  X X X X ";
+    "B  X X 2 1 ";
     "C  X X X X ";
     "D  X X X X ";
     "";
@@ -232,7 +232,7 @@ let b_vis_flag_cleared =
 let b_vis_clear_flagged =
   [
     "A  X 2 1 _ ";
-    "B  X X X X ";
+    "B  X X 2 1 ";
     "C  X X X X ";
     "D  X X X X ";
     "";
@@ -268,10 +268,13 @@ let board_test =
     ( "testing 1 flag on board" >:: fun _ ->
       assert_equal b_vis_1flag (b_with_1_flag |> Board.to_string_list) );
     ( "testing remove flag on board" >:: fun _ ->
-      assert_equal b_vis_remove_flag (b_remove_flag |> Board.to_string_list) );
+      assert_equal b_vis_remove_flag
+        (b_remove_flag |> Board.to_string_list)
+        ~printer:pp_lst );
     ( "testing flag cleared spot " >:: fun _ ->
-      assert_equal b_vis_flag_cleared (b_flag_cleared |> Board.to_string_list)
-    );
+      assert_equal b_vis_flag_cleared
+        (b_flag_cleared |> Board.to_string_list)
+        ~printer:pp_lst );
     ( "testing genrate func" >:: fun _ ->
       assert_equal start_vis_board (b_gen |> Board.to_string_list) );
     ( "testing genrated board size" >:: fun _ ->
