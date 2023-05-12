@@ -235,7 +235,7 @@ let rec range_clear (brd : board) (position : int * int) (range : int list) =
                   next_check brd.grid;
               remainingCells = brd.remainingCells - 1;
             }
-          with Cell.MineUncovered -> brd
+          with _ -> brd
         in
         (*Clear if cell is empty, continue through range otherwise*)
         if !emt then
@@ -258,12 +258,16 @@ and clear_position brd (position : int * int) =
           modify_grid_index (Cell.clear_volatile_cascade emt) position brd.grid;
         remainingCells = brd.remainingCells - 1;
       }
-    with Cell.MineUncovered ->
-      {
-        brd with
-        grid = modify_grid_index Cell.clear position brd.grid;
-        validity = false;
-      }
+    with
+    | Cell.MineUncovered ->
+        {
+          brd with
+          grid = modify_grid_index Cell.clear position brd.grid;
+          validity = false;
+        }
+    | Cell.ReclearAttempted ->
+        emt := false;
+        brd
   in
   if not !emt then bd else range_clear bd position [ 0; 1; 2; 3; 4; 5; 6; 7 ]
 
