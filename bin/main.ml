@@ -78,7 +78,7 @@ let rec advance_game st =
             advance_game st
         | Minesweeper.State.Legal state -> state)
     | Minesweeper.Command.Quit ->
-        print_string "You Have Exitted The Game";
+        print_endline "You Have Exitted The Game";
         exit 0
     | Minesweeper.Command.Restart ->
         print_endline
@@ -116,7 +116,15 @@ let rec progress st =
       print_endline "Enter a command";
       print_string "> ";
       progress x
-  | Minesweeper.State.Lost -> print_endline "You have Lost"
+  | Minesweeper.State.Lost ->
+      print_board_helper
+        (Minesweeper.Board.to_string_list
+           (Minesweeper.Board.uncover_board
+              (Minesweeper.State.get_current_board x)));
+      print_newline ();
+      print_endline "You have Lost";
+      print_string "> ";
+      progress x
   | Minesweeper.State.Won -> print_endline "You Have Won"
 (*This will need to be changed eventually*)
 
