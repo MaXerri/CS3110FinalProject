@@ -100,12 +100,7 @@ let parse_boolean_lists above at below =
     shorter than its input*)
   let rec pbl_helper (above : bool list) (at : bool list) (below : bool list) =
     match (above, at, below) with
-    | [ h0; h1 ], [ i0; i1 ], [ j0; j1 ] ->
-        let c =
-          if i1 then Cell.generate (-1)
-          else Cell.generate (bool_list_to_int [ h0; h1; i0; j0; j1 ])
-        in
-        [ c ]
+    | [ _; _ ], [ _; _ ], [ _; _ ] -> []
     | h0 :: h1 :: h2 :: t_ab, i0 :: i1 :: i2 :: t_at, j0 :: j1 :: j2 :: t_bl ->
         let c =
           if i1 then Cell.generate (-1)
@@ -148,7 +143,7 @@ let parse_boolean_grid (grd_in : bool list list) =
           ((false :: r1) @ [ false ])
           ((false :: r2) @ [ false ])
         :: parse_grid (r1 :: r2 :: t)
-    | [ r0; r1 ] -> [ parse_boolean_lists r0 r1 f_list ]
+    | [ _; _ ] -> []
     | _ -> raise (Failure "Unnaccounted for failure in parse_boolean_grid")
   in
   parse_grid grd_app
