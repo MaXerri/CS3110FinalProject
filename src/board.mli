@@ -46,3 +46,7 @@ val is_complete : board -> bool
 val mines_left : board -> int
 (** [mines_left brd] is an int denoting the number of mines which have not yet
     been uncovered*)
+
+val uncover_board : board -> board
+(**[uncover_board brd] is the board [brd] with the value of all cells set to
+   visible and a failed gamestate*)

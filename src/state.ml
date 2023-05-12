@@ -10,7 +10,7 @@ type t = {
 
 let init_state m n =
   {
-    current_board = Board.generate_from_bool_grid Boolean_test_boards.bb_1;
+    current_board = Board.generate m n;
     game_over =
       (match (m, n) with
       | _ -> Play);

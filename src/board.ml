@@ -252,4 +252,7 @@ let is_valid brd = brd.validity
 let is_complete brd = brd.remainingCells = 0
 let mines_left brd = brd.remainingCells
 
+let uncover_board (brd : board) : board =
+  { brd with grid = mutate_grid Cell.clear brd.grid; validity = false }
+
 (*this is a testing comment to check branches*)
