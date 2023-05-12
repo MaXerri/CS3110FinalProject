@@ -1,5 +1,51 @@
-(*Test plan: *)
-(**Everything tested in *)
+(*Test plan (By Module): *)
+(**bin/main file: This was tested entirely based on manual testing by playing
+   the game to make sure that we were prompting the user in the correct order
+   and correct messages were displaying on the screne at the right time. *)
+(*State: This file was blackbox tested and glassbox tested through ounit test
+  cases and also we verified everything worked manually by playing the game to
+  check if edge cases worked and that different parttern matching branches were
+  working properly. We would generate initial states based off a certain board
+  starting connfiguration and then we would prompt moves in the game to make new
+  states. Making the new states helped blackbox coverage as we could trigger
+  endgame states and simulate midgame states as well. Also make tests based on
+  specification to ensure edge cases were working and then also looked through
+  the code for these respective functions to make sure that all branches were
+  being tested *)
+(*Board: This file was tested using blackbox testing and manual testing by
+  playing the game. Black box testing was used to ensure that the unction was
+  behaving with repect to the specification and the tests we made ensured that
+  commands to clear and flag matched the printed out boards and that also we
+  checked if certain boards should trigger end states. The majority of the
+  testing was done manually though through testing using make play and playing
+  the game. We were feeding in fixed boards so we know where the bombds were and
+  then we tested clearing and flagging different squares to enure the correct
+  functionality. *)
+(*Cell: This file was tested using glassbox and blackbox testing. We checked the
+  branches of the functions and tested every one and also made tests to ensure
+  that edge cases on the inputs to the functions were covered. We ensured that
+  cells were displaying correctly by themselves depending if they were visible
+  or not and iwhat their underlying cell type. *)
+(*Commmand: This file was tested using glassbox, and manual testing. This files
+  handles invalid inputs so there was a lot of pattern matches to invalid inputs
+  and glassbox testing was used to ensures all these branches worked correctly.
+  Additionally, we vigorously were trying to catch errors by playing the game
+  and putting in invalid inputs to ensure that our game caught these and
+  prompted the user to put in a new input that would be valid*)
+(*OVERALL CORRECTNESS: First, State encompasses board and cell in a way as state
+  contains a board and a board is a matrix of cells. We were able to show the
+  correctness of the cell data type first through glass and backbox testing and
+  trial and error of playing the game. We have ensures that the smallest unit of
+  the game is working. Then we tested board and its functions and we know that
+  cell is correct as well so we have proved correctness for board. The same
+  logic goes into proving the correctness of state which encompasses a board.
+  testing the correctness of State shows that the progression of the game will
+  work correctly and that endstates are detected when reached and the game
+  progresses correctly. Then lastly showing correctness of the command parsing
+  shows that we will be able to correctly progress the game through user inputs.
+  The command is connected to state as it is what allows the user to interact
+  with game and advance the state of the game. Thus thorugh out test regime we
+  have shown the correctness of the entre system *)
 
 open OUnit2
 open Minesweeper
@@ -35,6 +81,7 @@ let bg_small_slist = [ "A  X X"; "B  X X"; ""; "   A B" ]
 
 (*switches the arguments of Board.clear_position to allow for pipelining*)
 let clear_rev t b = Board.clear_position b t
+let flag_rev t b = Board.flag_position b t
 
 let bb2 =
   let bb_int_1 =
@@ -80,6 +127,33 @@ let b_not_valid =
 let b_max_adjacent_bombs =
   Board.generate_from_bool_grid bb_max_adjacent_bombs |> clear_rev (1, 1)
 
+let b_with_1_flag =
+  Board.generate_from_bool_grid bb2
+  |> clear_rev (0, 1)
+  |> clear_rev (0, 2)
+  |> clear_rev (0, 3)
+  |> flag_rev (1, 0)
+
+let b_remove_flag = b_with_1_flag |> flag_rev (1, 0)
+
+let b_flag_cleared =
+  Board.generate_from_bool_grid bb2
+  |> clear_rev (0, 1)
+  |> clear_rev (0, 2)
+  |> clear_rev (0, 3)
+  |> flag_rev (0, 1)
+  |> flag_rev (0, 2)
+  |> flag_rev (0, 3)
+
+let b_clear_flagged =
+  Board.generate_from_bool_grid bb2
+  |> clear_rev (0, 1)
+  |> clear_rev (0, 2)
+  |> flag_rev (0, 3)
+  |> clear_rev (0, 3)
+
+let b_gen = Board.generate 4 4
+
 let b_won_vis_board =
   [ "A  X _ _ _"; "B  _ X _ _"; "C  _ _ X _"; "D  _ _ _ X"; "   A B C D" ]
 
@@ -92,16 +166,25 @@ let start_vis_board =
 let b_vis_max_adjacent_bomb =
   [ "A  X X X X"; "B  X 8 X X"; "C  X X X X"; "D  X X X X"; "   A B C D" ]
 
+let b_vis_1flag =
+  [ "A  X 2 1 _"; "B  ? X X X"; "C  X X X X"; "D  X X X X"; "   A B C D" ]
+
+let b_vis_remove_flag =
+  [ "A  X 2 1 _"; "B  X X X X"; "C  X X X X"; "D  X X X X"; "   A B C D" ]
+
+let b_vis_flag_cleared =
+  [ "A  X 2 1 _"; "B  X X X X"; "C  X X X X"; "D  X X X X"; "   A B C D" ]
+
+let b_vis_clear_flagged =
+  [ "A  X 2 1 _"; "B  X X X X"; "C  X X X X"; "D  X X X X"; "   A B C D" ]
+
 (*Lists of tests*)
 let board_test =
   [
-    ( "Boolean board" >:: fun _ ->
+    ( "Boolean board production test" >:: fun _ ->
       assert_equal bg_small_slist
         Board.(generate_from_bool_grid bg_small |> to_string_list) )
     (*Mario Tests*);
-    ( "sequential test" >:: fun _ ->
-      assert_equal bg_small_slist
-        Board.(generate_from_bool_grid bg_small |> to_string_list) );
     ( "win final board" >:: fun _ ->
       assert_equal b_won_vis_board Board.(b_won |> to_string_list) );
     ( "is_complete true test" >:: fun _ ->
@@ -109,9 +192,9 @@ let board_test =
     ( "is_complete false test" >:: fun _ ->
       assert_equal false (b_not_complete |> Board.is_complete) );
     ( "is_valid false test" >:: fun _ ->
-      assert_equal false (b_not_valid |> Board.is_complete) );
+      assert_equal false (b_not_valid |> Board.is_valid) );
     ( "is_valid true test" >:: fun _ ->
-      assert_equal true (b_not_complete |> Board.is_complete) );
+      assert_equal true (b_not_complete |> Board.is_valid) );
     ( "testing board mid game" >:: fun _ ->
       assert_equal still_playing_vis_board
         (b_not_complete |> Board.to_string_list) );
@@ -120,6 +203,21 @@ let board_test =
     ( "testing case where 8 bombs surround clear cell" >:: fun _ ->
       assert_equal b_vis_max_adjacent_bomb
         (b_max_adjacent_bombs |> Board.to_string_list) );
+    ( "testing 1 flag on board" >:: fun _ ->
+      assert_equal b_vis_1flag (b_with_1_flag |> Board.to_string_list) );
+    ( "testing remove flag on board" >:: fun _ ->
+      assert_equal b_vis_remove_flag (b_remove_flag |> Board.to_string_list) );
+    ( "testing flag cleared spot " >:: fun _ ->
+      assert_equal b_vis_flag_cleared (b_flag_cleared |> Board.to_string_list)
+    );
+    ( "testing genrate func" >:: fun _ ->
+      assert_equal start_vis_board (b_gen |> Board.to_string_list) );
+    ( "testing genrated board size" >:: fun _ ->
+      assert_equal (4, 4) (b_gen |> Board.dimensions) );
+    ( "testing genrated board that it is not complete" >:: fun _ ->
+      assert_equal false (b_gen |> Board.is_complete) );
+    ( "testing genrated board that it is valid" >:: fun _ ->
+      assert_equal true (b_gen |> Board.is_valid) );
   ]
 
 (*Cell pretty print*)
@@ -187,7 +285,8 @@ let parse_tester (name : string) (input : string)
 let command_test =
   [
     parse_tester "clear valid" "clear 1 1" (Command.Clear (1, 1));
-    parse_tester "flag valid" "clear 0 0" (Command.Flag (0, 0));
+    parse_tester "flag valid" "flag 0 0" (Command.Flag (0, 0));
+    parse_tester "flag valid extra space " "flag 0  0" (Command.Flag (0, 0));
     parse_tester "quit tester" "quit" Command.Quit;
     parse_tester "quit tester" "restart" Command.Restart;
     ( "testing invalid quit command" >:: fun _ ->
@@ -205,10 +304,15 @@ let command_test =
     ( "invalid flag with more than 2 arg" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "flag 0 0 0") );
     ( "flag with 0 args" >:: fun _ ->
-      assert_raises Command.Empty (fun () -> Command.parse "flag") );
-    ( "3 random chars" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "0 0 0") )
-    (*May be handled in main *);
+      assert_raises Command.Malformed (fun () -> Command.parse "flag") );
+    ( "3 random strings" >:: fun _ ->
+      assert_raises Command.Malformed (fun () -> Command.parse "0 0 0") );
+    ( "empty command" >:: fun _ ->
+      assert_raises Command.Empty (fun () -> Command.parse "") );
+    ( "non integer args flag" >:: fun _ ->
+      assert_raises Command.Malformed (fun () -> Command.parse "flag j j") );
+    ( "non integer args clear" >:: fun _ ->
+      assert_raises Command.Malformed (fun () -> Command.parse "clear j j") );
   ]
 
 (*extracts the state from Result type output of State.clear*)
