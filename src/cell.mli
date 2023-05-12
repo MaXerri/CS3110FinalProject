@@ -19,6 +19,9 @@ val clear : cell -> cell
 val clear_volatile : cell -> cell
 (** [clear c] is the cell [c] after the player has attempted to clear it. *)
 
+val clear_volatile_cascade : bool ref -> cell -> cell
+(** [clear c] is the cell [c] after the player has attempted to clear it. *)
+
 val flag : cell -> cell
 (** [flag c] is the cell [c] after the player has attempted to flag it. *)
 

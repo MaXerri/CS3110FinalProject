@@ -54,5 +54,16 @@ let not_mine c =
   | Mine -> false
   | _ -> true
 
+let is_empty c =
+  match c.c_type with
+  | Empty -> true
+  | _ -> false
+
 let clear_volatile c =
   if not_mine c then { c with visibility = Cleared } else raise MineUncovered
+
+let clear_volatile_cascade (emt : bool ref) (c : cell) : cell =
+  if not_mine c then (
+    emt := is_empty c;
+    { c with visibility = Cleared })
+  else raise MineUncovered

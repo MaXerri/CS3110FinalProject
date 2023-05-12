@@ -192,21 +192,80 @@ let generate_random_grid (m : int) (n : int) (ct : int) :
   in
   (grid, !counter)
 
+let sum_position (p1 : int * int) (p2 : int * int) : int * int =
+  match (p1, p2) with
+  | (m1, n1), (m2, n2) -> (m1 + m2, n1 + n2)
+
+let get_offset pos =
+  match pos with
+  | 1 -> (1, 0)
+  | 2 -> (1, 1)
+  | 3 -> (0, 1)
+  | 4 -> (-1, 1)
+  | 5 -> (-1, 0)
+  | 6 -> (-1, -1)
+  | 7 -> (0, -1)
+  | 0 -> (1, -1)
+  | _ -> failwith "Bad range in [range_clear]"
+
+let confirm_in_bounds pos m n =
+  match pos with
+  | m1, n1 -> m1 >= 0 && m1 < m && n1 >= 0 && n1 < n
+
+(*Performs cascade around a known empty cell*)
+let rec range_clear (brd : board) (position : int * int) (range : int list) =
+  (*Set up ref for later empty checks*)
+  let emt = ref false in
+  (*[range] determines number of itterations*)
+  match range with
+  | [] -> brd
+  (*if itterations remain*)
+  | h :: t ->
+      (*check if the proposed position is in bounds of [brd]*)
+      let next_check = sum_position position (get_offset h) in
+      if confirm_in_bounds next_check brd.m brd.n then
+        (*if so then check if proposed position is empty*)
+        let bd_poss =
+          try
+            {
+              brd with
+              grid =
+                modify_grid_index
+                  (Cell.clear_volatile_cascade emt)
+                  next_check brd.grid;
+              remainingCells = brd.remainingCells - 1;
+            }
+          with Cell.MineUncovered -> brd
+        in
+        (*Clear if cell is empty, continue through range otherwise*)
+        if !emt then
+          range_clear
+            (range_clear bd_poss next_check
+               [ abs (h - 1); h; abs (h + 1) mod 8 ])
+            position t
+        else range_clear bd_poss position t (*Else continue through range*)
+      else range_clear brd position t
+
 (*** Functions ****************************************************************)
 
-let clear_position brd (position : int * int) =
-  try
-    {
-      brd with
-      grid = modify_grid_index Cell.clear_volatile position brd.grid;
-      remainingCells = brd.remainingCells - 1;
-    }
-  with Cell.MineUncovered ->
-    {
-      brd with
-      grid = modify_grid_index Cell.clear position brd.grid;
-      validity = false;
-    }
+and clear_position brd (position : int * int) =
+  let emt = ref false in
+  let bd =
+    try
+      {
+        brd with
+        grid =
+          modify_grid_index (Cell.clear_volatile_cascade emt) position brd.grid;
+        remainingCells = brd.remainingCells - 1;
+      }
+    with Cell.MineUncovered ->
+      {
+        brd with
+        grid = modify_grid_index Cell.clear position brd.grid;
+        validity = false;
+      }
+  in
+  if not !emt then bd else range_clear bd position [ 0; 1; 2; 3; 4; 5; 6; 7 ]
 
 let flag_position brd (position : int * int) =
   { brd with grid = modify_grid_index Cell.flag position brd.grid }
@@ -214,7 +273,7 @@ let flag_position brd (position : int * int) =
 let to_string_list brd : string list = board_to_stringlist brd
 
 let generate m n =
-  match generate_random_grid m n (m * n / 6) with
+  match generate_random_grid m n (m * n / 9) with
   | grd, ct ->
       { validity = true; grid = grd; remainingCells = (m * n) - ct; m; n }
 
