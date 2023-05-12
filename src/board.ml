@@ -177,6 +177,7 @@ let count_true_bool_grid (bgrid : bool list list) : int =
 
 let generate_random_grid (m : int) (n : int) (ct : int) :
     Cell.cell list list * int =
+  Random.self_init ();
   let counter = ref 0 in
   let mx = m * n in
   let grid =
