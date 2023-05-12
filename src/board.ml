@@ -25,6 +25,16 @@ let modify_grid_index foi (ind : int * int) (grd : 'a list list) =
   match ind with
   | m, n -> modify_list_index (modify_list_index foi n) m grd
 
+(**[mutate_grid foi grd] returns grid [grd] with each modified by function
+   [foi]. Used for modification of all elements within a grid.*)
+let mutate_grid (foi : 'a -> 'a) (grd : 'a list list) : 'a list list =
+  let rec mutate_list f ls =
+    match ls with
+    | h :: t -> f h :: mutate_list f t
+    | [] -> []
+  in
+  mutate_list (mutate_list foi) grd
+
 (**[generate_naive_list controller l] generates a list of length [l] with
    elements produced by the function [controller], which generates a value when
    passed a boolean. Useful in the generation of grids for play.*)
@@ -100,12 +110,7 @@ let parse_boolean_lists above at below =
     shorter than its input*)
   let rec pbl_helper (above : bool list) (at : bool list) (below : bool list) =
     match (above, at, below) with
-    | [ h0; h1 ], [ i0; i1 ], [ j0; j1 ] ->
-        let c =
-          if i1 then Cell.generate (-1)
-          else Cell.generate (bool_list_to_int [ h0; h1; i0; j0; j1 ])
-        in
-        [ c ]
+    | [ _; _ ], [ _; _ ], [ _; _ ] -> []
     | h0 :: h1 :: h2 :: t_ab, i0 :: i1 :: i2 :: t_at, j0 :: j1 :: j2 :: t_bl ->
         let c =
           if i1 then Cell.generate (-1)
@@ -148,7 +153,7 @@ let parse_boolean_grid (grd_in : bool list list) =
           ((false :: r1) @ [ false ])
           ((false :: r2) @ [ false ])
         :: parse_grid (r1 :: r2 :: t)
-    | [ r0; r1 ] -> [ parse_boolean_lists r0 r1 f_list ]
+    | [ _; _ ] -> []
     | _ -> raise (Failure "Unnaccounted for failure in parse_boolean_grid")
   in
   parse_grid grd_app
@@ -169,6 +174,22 @@ let count_true_bool_grid (bgrid : bool list list) : int =
     | h :: t -> count_true_bool_list h + rec_count_true_bool_grid t
   in
   rec_count_true_bool_grid bgrid
+
+let generate_random_grid (m : int) (n : int) (ct : int) :
+    Cell.cell list list * int =
+  let counter = ref 0 in
+  let mx = m * n in
+  let grid =
+    generate_naive_grid
+      (fun _ ->
+        if Random.int mx < ct then (
+          counter := !counter + 1;
+          true)
+        else false)
+      m n
+    |> parse_boolean_grid
+  in
+  (grid, !counter)
 
 (*** Functions ****************************************************************)
 
@@ -192,18 +213,9 @@ let flag_position brd (position : int * int) =
 let to_string_list brd : string list = board_to_stringlist brd
 
 let generate m n =
-  {
-    validity = true;
-    remainingCells = m * n;
-    grid =
-      generate_naive_grid
-        (fun a ->
-          if a then Cell.generate 0
-          else raise (Failure "Poorly defined controller"))
-        m n;
-    m;
-    n;
-  }
+  match generate_random_grid m n (m * n / 6) with
+  | grd, ct ->
+      { validity = true; grid = grd; remainingCells = (m * n) - ct; m; n }
 
 let generate_from_bool_grid bool_grd =
   let cols = List.length bool_grd in
