@@ -416,9 +416,6 @@ let cell_test =
     generate_test "Generate value 6 cell" 6 v6Cell;
     generate_test "Generate value 7 cell" 7 v7Cell;
     generate_test "Generate value 8 cell" 8 v8Cell;
-    (*generate_test "Generate value -2 cell" (-2) badCell;*)
-    (* generate_test "Generate max int cell" 1073741823 maxIntCell;*)
-    (*generate_test "Generate max int cell" (-1073741824) minIntCell;*)
     to_int_test "int of value 1 cell" v1Cell 1;
     to_int_test "int of value 2 cell" v2Cell 2;
     to_int_test "int of value 3 cell" v3Cell 3;
@@ -429,9 +426,6 @@ let cell_test =
     to_int_test "int of value 8 cell" v8Cell 8;
     to_int_test "int of Mine Cell" mineCell (-1);
     to_int_test "int of empty Cell" emptyCell 0;
-    (*to_int_test "int of value -2 Cell" badCell (-2);*)
-    (* to_int_test "int of max int cell" maxIntCell 1073741823;*)
-    (* to_int_test "int of min int cell" minIntCell (-1073741824);*)
     to_char_test "Mine Cell" mineCell 'X';
     (*Mario tests*)
     to_char_test "Non Mine" v1Cell 'X';

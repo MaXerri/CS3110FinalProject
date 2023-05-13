@@ -123,8 +123,17 @@ let rec progress st =
               (Minesweeper.State.get_current_board x)));
       print_newline ();
       print_endline "You have Lost";
+      print_endline "Enter the new game size you want to load";
       print_string "> ";
-      progress x
+      let initial_state = get_input () in
+      print_newline ();
+      print_board_helper (*fix the printer helper*)
+        (Minesweeper.Board.to_string_list
+           (Minesweeper.State.get_current_board initial_state));
+      print_newline ();
+      print_endline "Enter a command";
+      print_string "> ";
+      progress initial_state
   | Minesweeper.State.Won -> print_endline "You Have Won"
 (*This will need to be changed eventually*)
 
