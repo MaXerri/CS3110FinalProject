@@ -159,6 +159,59 @@ let b_clear_flagged =
 
 let b_gen = Board.generate 4 4
 
+let bb_casc1 =
+  let z =
+    [
+      [ 0; 0; 0; 0; 0; 0 ];
+      [ 0; 0; 0; 0; 0; 0 ];
+      [ 0; 0; 1; 1; 0; 0 ];
+      [ 0; 0; 1; 1; 0; 0 ];
+      [ 0; 0; 0; 1; 0; 0 ];
+      [ 0; 0; 0; 0; 0; 0 ];
+    ]
+  in
+  List.map (List.map (fun a -> a = 1)) z
+
+let bb_casc2 =
+  let z =
+    [
+      [ 0; 0; 0; 1; 0; 0 ];
+      [ 0; 0; 1; 0; 0; 0 ];
+      [ 0; 1; 0; 0; 0; 0 ];
+      [ 1; 0; 0; 0; 0; 0 ];
+      [ 0; 0; 0; 0; 0; 0 ];
+      [ 0; 0; 0; 0; 0; 1 ];
+    ]
+  in
+  List.map (List.map (fun a -> a = 1)) z
+
+let bb_casc3 =
+  let z =
+    [
+      [ 1; 1; 1; 1; 1; 1 ];
+      [ 1; 0; 0; 0; 0; 1 ];
+      [ 1; 0; 0; 0; 0; 1 ];
+      [ 1; 0; 0; 0; 0; 1 ];
+      [ 1; 0; 0; 0; 1; 1 ];
+      [ 1; 1; 1; 1; 1; 1 ];
+    ]
+  in
+  List.map (List.map (fun a -> a = 1)) z
+
+let b_casc1 = Board.generate_from_bool_grid bb_casc1 |> clear_rev (0, 0)
+
+let b_casc2 =
+  Board.generate_from_bool_grid bb_casc2
+  |> clear_rev (4, 4)
+  |> clear_rev (3, 3)
+  |> flag_rev (5, 5)
+
+let b_casc3 =
+  Board.generate_from_bool_grid bb_casc3
+  |> clear_rev (1, 1)
+  |> clear_rev (2, 2)
+  |> flag_rev (0, 0)
+
 let b_won_vis_board =
   [
     "A  X 2 1 _ ";
@@ -239,6 +292,42 @@ let b_vis_clear_flagged =
     "   A B C D ";
   ]
 
+let b_vis_casc1 =
+  [
+    "A  _ _ _ _ _ _ ";
+    "B  _ 1 2 2 1 _ ";
+    "C  _ 2 X X 2 _ ";
+    "D  _ 2 X X 3 _ ";
+    "E  _ 1 3 X 2 _ ";
+    "F  _ _ 1 X 1 _ ";
+    "";
+    "   A B C D E F ";
+  ]
+
+let b_vis_casc2 =
+  [
+    "A  X X X X 1 _ ";
+    "B  X X X 2 1 _ ";
+    "C  X X 2 1 _ _ ";
+    "D  X 2 1 _ _ _ ";
+    "E  1 1 _ _ 1 1 ";
+    "F  _ _ _ _ 1 ? ";
+    "";
+    "   A B C D E F ";
+  ]
+
+let b_vis_casc3 =
+  [
+    "A  ? X X X X X ";
+    "B  X 5 3 3 5 X ";
+    "C  X 3 _ _ 3 X ";
+    "D  X 3 _ 1 4 X ";
+    "E  X 5 3 4 X X ";
+    "F  X X X X X X ";
+    "";
+    "   A B C D E F ";
+  ]
+
 (*Lists of tests*)
 let board_test =
   [
@@ -287,6 +376,15 @@ let board_test =
       assert_equal b_vis_clear_flagged
         (b_clear_flagged |> Board.to_string_list)
         ~printer:pp_lst );
+    ( "testing cascade around outside " >:: fun _ ->
+      assert_equal b_vis_casc1 (b_casc1 |> Board.to_string_list) ~printer:pp_lst
+    );
+    ( "testing cascade around outside " >:: fun _ ->
+      assert_equal b_vis_casc2 (b_casc2 |> Board.to_string_list) ~printer:pp_lst
+    );
+    ( "testing cascade when surrounded by bombds " >:: fun _ ->
+      assert_equal b_vis_casc3 (b_casc3 |> Board.to_string_list) ~printer:pp_lst
+    );
   ]
 
 (*Cell pretty print*)
