@@ -25,3 +25,7 @@ cloc:
 zip:
 	rm -f finalproject.zip
 	zip -r finalproject.zip . -x@exclude.lst
+
+validate:
+	cloc --by-file --include-lang=OCaml --exclude-dir=_build .
+	OCAMLRUNPARAM=b dune exec test/main.exe
