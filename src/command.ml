@@ -13,7 +13,7 @@ exception Malformed
 let check_empty str =
   List.filter (fun x -> x <> "") (String.split_on_char ' ' str) = []
 
-let int_to_char n =
+(* let int_to_char n =
   let rec int_to_char_aux num (acc_chars : char list) = 
     let remainder = num mod 26 in 
     let quotient = num / 26 in
@@ -23,7 +23,7 @@ let int_to_char n =
       int_to_char_aux (quotient - 1) ((Char.chr (remainder + 65)) :: acc_chars)
   in
   let char_list = int_to_char_aux n [] in
-  char_list |> List.map (fun c -> String.make 1 c) |> String.concat ""
+  char_list |> List.map (fun c -> String.make 1 c) |> String.concat "" *)
 
 let char_to_int s =
   let rec char_to_int_aux chars acc =
@@ -61,23 +61,27 @@ let parse str =
     | h :: t ->
         if h = "clear" then
           if List.length t = 2 then
-            Clear
-              ( (match int_of_string_opt (List.nth t 0) with
-                | Some i -> i
-                | None -> raise Malformed),
-                match int_of_string_opt (List.nth t 1) with
-                | Some i -> i
-                | None -> raise Malformed )
+            let x = List.nth t 0 in
+            let y = List.nth t 1 in
+            let row =
+              try int_of_string x with Failure _ -> char_to_int x
+            in
+            let col =
+              try int_of_string y with Failure _ -> char_to_int y
+            in
+            Clear (row, col)
           else raise Malformed
         else if h = "flag" then
           if List.length t = 2 then
-            Flag
-              ( (match int_of_string_opt (List.nth t 0) with
-                | Some i -> i
-                | None -> raise Malformed),
-                match int_of_string_opt (List.nth t 1) with
-                | Some i -> i
-                | None -> raise Malformed )
+            let x = List.nth t 0 in
+            let y = List.nth t 1 in
+            let row =
+              try int_of_string x with Failure _ -> char_to_int x
+            in
+            let col =
+              try int_of_string y with Failure _ -> char_to_int y
+            in
+            Flag (row, col)
           else raise Malformed
         else if h = "quit" then Quit
         else Restart
