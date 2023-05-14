@@ -1,10 +1,13 @@
-type object_phrase = int * int
+type object_phrase = 
+| RowCol of int * int 
+| LetterCol of string * int
 
 type command =
   | Clear of object_phrase
   | Flag of object_phrase
   | Quit
   | Restart
+
 
 exception Empty
 exception Malformed
