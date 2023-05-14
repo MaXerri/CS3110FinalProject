@@ -80,6 +80,14 @@ let rec advance_game st =
     | Minesweeper.Command.Quit ->
         print_endline "You Have Exitted The Game";
         exit 0
+    | Minesweeper.Command.Help ->
+        print_endline "Here is a list of the commands";
+        print_endline "clear <row> <column>";
+        print_endline "flag <row> <column>";
+        print_endline "quit";
+        print_endline "help";
+        print_string "> ";
+        advance_game st
     | Minesweeper.Command.Restart ->
         print_endline
           "You have restarted the game.  Input the board size for your new \
