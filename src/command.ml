@@ -13,20 +13,22 @@ exception Malformed
 let check_empty str =
   List.filter (fun x -> x <> "") (String.split_on_char ' ' str) = []
 
-  let int_to_char n =
-    let rec int_to_char_aux num acc_chars =
-      match num with
-      | 0 -> [(Char.chr (List.hd acc_chars + 65))]
-      | _ ->
-          let remainder = num mod 26 in
-          let quotient = num / 26 in
-          if quotient = 0 then
-            (Char.chr (remainder + 65)) :: acc_chars
-          else
-            int_to_char_aux quotient ((Char.chr (remainder + 65)) :: acc_chars)
-    in
-    let char_list = int_to_char_aux n [] in
-    List.rev char_list |> List.map (fun c -> String.make 1 c) |> List.rev |> String.concat ""
+let int_to_char n =
+  let rec int_to_char_aux num (acc_chars : char list) =
+    match acc_chars with
+    | [] -> acc_chars
+    | [x] -> (Char.chr (int_of_char x + 65)) :: []
+    | _ ->
+        let remainder = num mod 26 in
+        let quotient = num / 26 in
+        if quotient = 0 then
+          (Char.chr (remainder + 65)) :: acc_chars
+        else
+          int_to_char_aux quotient ((Char.chr (remainder + 65)) :: acc_chars)
+  in
+  let char_list = int_to_char_aux n [char_of_int 0] in
+  List.rev char_list |> List.map (fun c -> String.make 1 c) |> String.concat ""
+  
 
 let check_malformed str_list =
   match str_list with
