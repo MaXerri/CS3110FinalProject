@@ -17,7 +17,6 @@ let int_to_char n =
   let rec int_to_char_aux num (acc_chars : char list) =
     match acc_chars with
     | [] -> acc_chars
-    | [x] -> (Char.chr (int_of_char x + 65)) :: []
     | _ ->
         let remainder = num mod 26 in
         let quotient = num / 26 in
