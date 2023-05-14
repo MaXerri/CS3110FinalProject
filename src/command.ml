@@ -1,6 +1,4 @@
-type object_phrase = 
-| RowCol of int * int 
-| LetterCol of string * int
+type object_phrase = int * int
 
 type command =
   | Clear of object_phrase
@@ -15,6 +13,21 @@ exception Malformed
 let check_empty str =
   List.filter (fun x -> x <> "") (String.split_on_char ' ' str) = []
 
+  let int_to_char n =
+    let rec int_to_char_aux num acc_chars =
+      match num with
+      | 0 -> [(Char.chr (List.hd acc_chars + 65))]
+      | _ ->
+          let remainder = num mod 26 in
+          let quotient = num / 26 in
+          if quotient = 0 then
+            (Char.chr (remainder + 65)) :: acc_chars
+          else
+            int_to_char_aux quotient ((Char.chr (remainder + 65)) :: acc_chars)
+    in
+    let char_list = int_to_char_aux n [] in
+    List.rev char_list |> List.map (fun c -> String.make 1 c) |> List.rev |> String.concat ""
+
 let check_malformed str_list =
   match str_list with
   | [] -> raise Empty
@@ -25,22 +38,6 @@ let check_malformed str_list =
       else if h = "flag" && t = [] then true
       else if h = "restart" && t <> [] then true
       else false
-
-let flag_object col1 col2 =
-  let row_col = function 
-    | 'a' | 'A' -> 1 
-    | 'b' | 'B' -> 2 
-    | 'c' | 'C' -> 3 
-    | 'd' | 'D' -> 4 
-    | 'e' | 'E' -> 5 
-    | 'f' | 'F' -> 6 
-    | 'g' | 'G' -> 7 
-    | 'h' | 'H' -> 8 
-    | _ -> raise Malformed
-  in
-  match row_col (String.get (String.uppercase_ascii col1) 0) with
-  | row -> RowCol (row, col2)
-
 
 let parse str =
   if check_empty str then raise Empty
@@ -55,16 +52,22 @@ let parse str =
         if h = "clear" then
           if List.length t = 2 then
             Clear
-              (match int_of_string_opt (List.nth t 1) with
-              | Some col -> flag_object (List.nth t 0) col
-              | None -> raise Malformed )
+              ( (match int_of_string_opt (List.nth t 0) with
+                | Some i -> i
+                | None -> raise Malformed),
+                match int_of_string_opt (List.nth t 1) with
+                | Some i -> i
+                | None -> raise Malformed )
           else raise Malformed
         else if h = "flag" then
           if List.length t = 2 then
             Flag
-              (match int_of_string_opt (List.nth t 0) with
-              | Some col -> flag_object (List.nth t 0) col
-              | None -> raise Malformed )
+              ( (match int_of_string_opt (List.nth t 0) with
+                | Some i -> i
+                | None -> raise Malformed),
+                match int_of_string_opt (List.nth t 1) with
+                | Some i -> i
+                | None -> raise Malformed )
           else raise Malformed
         else if h = "quit" then Quit
         else Restart
