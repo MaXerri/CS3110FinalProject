@@ -24,7 +24,19 @@ let int_to_char n =
   in
   let char_list = int_to_char_aux n [] in
   char_list |> List.map (fun c -> String.make 1 c) |> String.concat ""
+
+let char_to_int s =
+  let rec char_to_int_aux chars acc =
+    match chars with
+    | [] -> acc
+    | c :: t ->
+        let code = (Char.code c) - 64 in
+        let value = acc * 26 + code  in
+        char_to_int_aux t value
+  in
+  char_to_int_aux (String.to_seq s |> List.of_seq) 0
   
+
 
 let check_malformed str_list =
   match str_list with
