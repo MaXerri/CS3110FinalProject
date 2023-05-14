@@ -26,6 +26,22 @@ let check_malformed str_list =
       else if h = "restart" && t <> [] then true
       else false
 
+let flag_object col1 col2 =
+  let row_col = function 
+    | 'a' | 'A' -> 1 
+    | 'b' | 'B' -> 2 
+    | 'c' | 'C' -> 3 
+    | 'd' | 'D' -> 4 
+    | 'e' | 'E' -> 5 
+    | 'f' | 'F' -> 6 
+    | 'g' | 'G' -> 7 
+    | 'h' | 'H' -> 8 
+    | _ -> raise Malformed
+  in
+  match row_col (String.get (String.uppercase_ascii col1) 0) with
+  | row -> RowCol (row, col2)
+
+
 let parse str =
   if check_empty str then raise Empty
   else if
@@ -39,22 +55,16 @@ let parse str =
         if h = "clear" then
           if List.length t = 2 then
             Clear
-              ( (match int_of_string_opt (List.nth t 0) with
-                | Some i -> i
-                | None -> raise Malformed),
-                match int_of_string_opt (List.nth t 1) with
-                | Some i -> i
-                | None -> raise Malformed )
+              (match int_of_string_opt (List.nth t 1) with
+              | Some col -> flag_object (List.nth t 0) col
+              | None -> raise Malformed )
           else raise Malformed
         else if h = "flag" then
           if List.length t = 2 then
             Flag
-              ( (match int_of_string_opt (List.nth t 0) with
-                | Some i -> i
-                | None -> raise Malformed),
-                match int_of_string_opt (List.nth t 1) with
-                | Some i -> i
-                | None -> raise Malformed )
+              (match int_of_string_opt (List.nth t 0) with
+              | Some col -> flag_object (List.nth t 0) col
+              | None -> raise Malformed )
           else raise Malformed
         else if h = "quit" then Quit
         else Restart
