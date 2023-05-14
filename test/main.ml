@@ -470,10 +470,10 @@ let command_test =
       assert_raises Command.Malformed (fun () -> Command.parse "0 0 0") );
     ( "empty command" >:: fun _ ->
       assert_raises Command.Empty (fun () -> Command.parse "") );
-    (* ( "non integer args flag" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "flag j j") );
-    ( "non integer args clear" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "clear j j") ); *)
+    ( "Non alphanumeric clear" >:: fun _ ->
+      assert_raises Command.Malformed (fun () -> Command.parse "clear @ @") );
+    ( "Non alphanumeric flag" >:: fun _ ->
+      assert_raises Command.Malformed (fun () -> Command.parse "flag @ @") );
   ]
 
 (*extracts the state from Result type output of State.clear*)

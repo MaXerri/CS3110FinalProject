@@ -35,8 +35,20 @@ let char_to_int s =
         char_to_int_aux t value
   in
   (char_to_int_aux (String.uppercase_ascii s |>String.to_seq |> List.of_seq) 0) - 1
-  
 
+let is_alphanumeric str =
+  let str = String.split_on_char ' ' str |> List.filter (fun s -> s <> "") |> String.concat "" in
+  let valid_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" in
+  let rec loop i =
+    if i < String.length str then
+      if not (String.contains valid_chars str.[i]) then
+        false
+      else
+        loop (i+1)
+    else
+      true
+  in
+  loop 0
 
 let check_malformed str_list =
   match str_list with
@@ -55,10 +67,12 @@ let parse str =
     check_malformed
       (List.filter (fun x -> x <> "") (String.split_on_char ' ' str))
   then raise Malformed
+  else if not(is_alphanumeric str) then raise Malformed    
   else
     match List.filter (fun x -> x <> "") (String.split_on_char ' ' str) with
     | [] -> raise Empty
     | h :: t ->
+        
         if h = "clear" then
           if List.length t = 2 then
             let x = List.nth t 0 in
