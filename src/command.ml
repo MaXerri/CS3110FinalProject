@@ -34,7 +34,7 @@ let char_to_int s =
         let value = acc * 26 + code  in
         char_to_int_aux t value
   in
-  char_to_int_aux (String.to_seq s |> List.of_seq) 0
+  (char_to_int_aux (String.uppercase_ascii s |>String.to_seq |> List.of_seq) 0) - 1
   
 
 
