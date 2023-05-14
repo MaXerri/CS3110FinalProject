@@ -159,6 +159,7 @@ let main () =
   print_endline
     "restart -> This starts a new game which you can select the size of";
   print_endline "quit -> This exits you out of the game";
+  print_endline "help -> This displays a list of commands";
   print_newline ();
   print_endline
     "Please enter the size of the game you want to load. Separate the desired \
