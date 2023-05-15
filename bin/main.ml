@@ -19,8 +19,8 @@ let message_help_sassy =
 let message_quit = "- [quit] -> Exit the game and return to the real world."
 
 (*Retrieves user input in the form of "Yes", "yes", "Y", "y", "No", "no", "N",
-  "n", and "quit" and converts it to a boolean value. Returns [false] in
-  response to a "quit" command. Recurses on itself if an invalid input has been
+  "n", and "quit" and converts it to a boolean value. Wxits the game in response
+  to a "quit" command. Recurses on itself if an invalid input has been
   recieved*)
 (* let rec binary_query () : bool = if true then true else binary_query () *)
 let rec binary_query () : bool =
@@ -28,7 +28,7 @@ let rec binary_query () : bool =
   match String.lowercase_ascii input with
   | "yes" | "y" -> true
   | "no" | "n" -> false
-  | "quit" -> false
+  | "quit" -> exit 0
   | _ ->
       print_endline "Invalid input. Please enter 'yes', 'no', or 'quit'.";
       binary_query ()
