@@ -497,7 +497,7 @@ let command_test =
     ( "clear with 0 args" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "clear") );
     ( "Case sensetive clear" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "clear 0 0") ); 
+      assert_raises Command.Malformed (fun () -> Command.parse "Clear 0 0") ); 
     ( "test invalid mix clear restart command" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "clear 0 0 restart") );
     ( "test invalid mix clear rules command" >:: fun _ ->
@@ -534,6 +534,8 @@ let command_test =
       assert_raises Command.Malformed (fun () -> Command.parse "clear @ @") );
     ( "Non alphanumeric flag" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "flag @ @") );
+    ( "Non alphanumeric mix flag" >:: fun _ ->
+      assert_raises Command.Malformed (fun () -> Command.parse "flag 0@ 0@") );
   ]
 
 (*extracts the state from Result type output of State.clear*)
