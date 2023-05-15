@@ -28,7 +28,7 @@ let rec binary_query () : bool =
   match String.lowercase_ascii input with
   | "yes" | "y" -> true
   | "no" | "n" -> false
-  | "quit" -> exit 0
+  | "quit" -> false
   | _ ->
       print_endline "Invalid input. Please enter 'yes', 'no', or 'quit'.";
       binary_query ()
