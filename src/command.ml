@@ -30,8 +30,10 @@ let char_to_int s =
         let value = (acc * 26) + code in
         char_to_int_aux t value
   in
+  let num = 
   char_to_int_aux (String.uppercase_ascii s |> String.to_seq |> List.of_seq) 0
-  - 1
+  - 1 in
+  if num >= 26 then raise Malformed else num
 
 let is_alphanumeric str =
   let str =
