@@ -60,6 +60,8 @@ let check_malformed str_list =
         && h <> "help" && h <> "rules"
       then true
       else if h = "quit" && t <> [] then true
+      else if h = "help" && t <> [] then true
+      else if h = "rules" && t <> [] then true
       else if h = "clear" && t = [] then true
       else if h = "flag" && t = [] then true
       else if h = "restart" && t <> [] then true
