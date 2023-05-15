@@ -1,17 +1,47 @@
 (** [valid f] checks if the board size is a valid boardsize*)
+let message_clear =
+  "- [clear <row> <column>] -> Clears a single tile on the board.\n\
+  \  If it contains a mine, you lose!"
+
+let message_flag =
+  "- [flag <row> <column>] -> Mark a single tile on the board so that\n\
+  \  you can remember where you think a mine might be."
+
+let message_rules =
+  "- [rules] -> Pull up a menu with an explanation of the rules of \n\
+  \  Minesweeper."
+
+let message_help = "- [help] -> Pull up a menu of commands that you can input."
+
+let message_help_sassy =
+  message_help ^ " I'm not \n  sure how you got here without knowing this one."
+
+let message_quit = "- [quit] -> Exit the game and return to the real world."
+
+(*Retrieves user input in the form of "Yes", "yes", "Y", "y", "No", "no", "N",
+  "n", and "quit" and converts it to a boolean value. Returns [false] in
+  response to a "quit" command. Recurses on itself if an invalid input has been
+  recieved*)
+let rec binary_query () : bool = if true then true else binary_query ()
+
+exception MalformedInput
+exception TooSmallInput
+exception OversizedBoard
+exception NegativeSize
+
 let valid_size f =
   let i = String.split_on_char ' ' f in
-  if List.length i <> 2 then false
+  if List.length i <> 2 then raise TooSmallInput
   else if
     (match int_of_string_opt (List.nth i 0) with
-    | Some num -> num
-    | None -> -1)
+    | Some num -> if num < 27 then num else raise OversizedBoard
+    | None -> raise MalformedInput)
     <= 0
     || (match int_of_string_opt (List.nth i 1) with
-       | Some num -> num
-       | None -> -1)
+       | Some num -> if num < 27 then num else raise OversizedBoard
+       | None -> raise MalformedInput)
        <= 0
-  then false
+  then raise NegativeSize
   else true
 
 (** [play_game f] starts a minesweeper game of size f. *)
@@ -23,13 +53,28 @@ let play_game f =
 
 (*Gets input for the boardsize*)
 let rec get_input () =
+  let re_call () =
+    print_string "> ";
+    get_input ()
+  in
   let x = read_line () in
-  match valid_size x with
-  | true -> play_game x
-  | false ->
-      print_endline "Invalid input. Try again";
-      print_string "> ";
-      get_input ()
+  try
+    if valid_size x then play_game x
+    else failwith "[get_input] impossible result"
+  with
+  | NegativeSize ->
+      print_endline
+        "At least one of your inputs was a negative number. Please try again:";
+      re_call ()
+  | OversizedBoard ->
+      print_endline
+        "You requested a board larger than (26 x 26). Please try again:";
+      re_call ()
+  | MalformedInput ->
+      print_endline
+        "At least one of the values you input was not a number. Please try \
+         again:";
+      re_call ()
 
 (** let rec print_board_helper grid = match grid with | [] -> print_newline () |
     h :: t -> List.iter (fun elem -> match Minesweeper.Cell.to_char elem with |
@@ -78,26 +123,47 @@ let rec advance_game st =
             advance_game st
         | Minesweeper.State.Legal state -> state)
     | Minesweeper.Command.Quit ->
-        print_endline "You Have Exitted The Game";
+        print_endline "You Have Exited The Game";
         exit 0
     | Minesweeper.Command.Help ->
-        print_endline "Here is a list of the commands";
-        print_endline "clear <row> <column>";
-        print_endline "flag <row> <column>";
-        print_endline "quit";
-        print_endline "help";
-        print_endline "rules";
+        print_newline ();
+        print_newline ();
+        print_endline "Here are the commands available to you: \n";
+        print_endline message_clear;
+        print_endline message_flag;
+        print_endline message_rules;
+        print_endline message_help_sassy;
+        print_endline message_quit;
+        print_newline ();
+        print_newline ();
+        Minesweeper.(
+          st |> State.get_current_board |> Board.to_string_list
+          |> print_board_helper);
+        print_newline ();
+        print_endline "Enter a command";
         print_string "> ";
         advance_game st
     | Minesweeper.Command.Rules ->
-        print_endline 
-        "\nMinesweeper is a game about clearing the board containing hidden \"mines\" without detonating any of them\n
-        The game board consists of a rectangulr grid of cells, some of which containing mines.\n\n
-        Use the `clear <row> <column>` command to attempt to clear a cell. If the cell contains a mine then you lose.\n
-        Otherwise, the cell will display an integer indcating the number of mines surrounding it\n
-        Using the revealed information, you can deduce what cells are safe to clear.\n
-        Use the `flag <row> <column>` command if you wish to mark a cell as containing a mine without attempting to clear it.\n
-        The goal is to clear all cells except those containing mines";
+        print_newline ();
+        print_newline ();
+        print_endline
+          "The objective of Minesweeper is to clear the game board without\n\
+           triggering any of the hidden mines. The board itself consists of \n\
+           a rectangular grid of cells, some of which are empty, some of which\n\
+           contain mines, and some of which contain a number corresponding to \n\
+           the number of mines adjacent to them (including diagonally).\n\n\
+           You must use the information revealed by the visible cells to \n\
+           deduce which cells are safe to clear, and which cells are not.\n\n\
+           To view a list of the commands you have at your disposal, enter \n\
+           the command \"help\".\n\n\
+           Happy Sweeping!";
+        print_newline ();
+        print_newline ();
+        Minesweeper.(
+          st |> State.get_current_board |> Board.to_string_list
+          |> print_board_helper);
+        print_newline ();
+        print_endline "Enter a command";
         print_string "> ";
         advance_game st
     | Minesweeper.Command.Restart ->
@@ -143,40 +209,41 @@ let rec progress st =
               (Minesweeper.State.get_current_board x)));
       print_newline ();
       print_endline "You have Lost";
-      print_endline "Enter the new game size you want to load";
-      print_string "> ";
-      let initial_state = get_input () in
-      print_newline ();
-      print_board_helper (*fix the printer helper*)
-        (Minesweeper.Board.to_string_list
-           (Minesweeper.State.get_current_board initial_state));
-      print_newline ();
-      print_endline "Enter a command";
-      print_string "> ";
-      progress initial_state
-  | Minesweeper.State.Won -> print_endline "You Have Won"
-(*This will need to be changed eventually*)
+      print_endline "Would you like to try again?";
+      if binary_query () then call_newGame () else ()
+  | Minesweeper.State.Won ->
+      print_endline "You Have Won!";
+      print_endline "Would you like to try again?";
+      if binary_query () then call_newGame () else ()
+
+and call_newGame () =
+  print_endline "Enter the new game size you want to load";
+  print_string "> ";
+  let initial_state = get_input () in
+  print_newline ();
+  print_board_helper (*fix the printer helper*)
+    (Minesweeper.Board.to_string_list
+       (Minesweeper.State.get_current_board initial_state));
+  print_newline ();
+  print_endline "Enter a command";
+  print_string "> ";
+  progress initial_state
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
-  print_string "\n\nWelcome to Minesweeper \n";
+  print_string "\n\n\n\n\n\nWelcome to Minesweeper! \n";
   print_newline ();
-  print_endline "These are the following commands and their descriptions:";
-  print_endline
-    "clear i j -> This means you choose to clear the cell at row i column j. \
-     Rows and columns are both ZERO INDEXED";
-  print_endline
-    "flag i j -> This means you choose to toggle flagging the cell at row i \
-     column j. Rows and columns are both ZERO INDEXED";
-  print_endline
-    "restart -> This starts a new game which you can select the size of";
-  print_endline "quit -> This exits you out of the game";
-  print_endline "help -> This displays a list of commands";
-  print_endline "rules -> This displays the rules of Minesweeper";
+  print_endline "Here is a list of the commands you have at your disposal:";
+  print_endline message_clear;
+  print_endline message_flag;
+  print_endline message_rules;
+  print_endline message_help;
+  print_endline message_quit;
   print_newline ();
   print_endline
-    "Please enter the size of the game you want to load. Separate the desired \
-     row and column size by 1 space";
+    "Please enter the size of the game you want to load. Separate the desired\n\
+     row and column size by 1 space. The maximum available board size is \n\
+     (26 x 26): \n";
   print_string "> ";
   let initial_state = get_input () in
   print_board_helper (*fix the printer helper*)
