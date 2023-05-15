@@ -6,6 +6,7 @@ type command =
   | Quit
   | Restart
   | Help
+  | Rules
 
 
 exception Empty
@@ -55,7 +56,7 @@ let check_malformed str_list =
   match str_list with
   | [] -> raise Empty
   | h :: t ->
-      if h <> "quit" && h <> "clear" && h <> "flag" && h <> "restart" && h <> "help"then true
+      if h <> "quit" && h <> "clear" && h <> "flag" && h <> "restart" && h <> "help" && h <> "rules" then true
       else if h = "quit" && t <> [] then true
       else if h = "clear" && t = [] then true
       else if h = "flag" && t = [] then true
@@ -100,4 +101,5 @@ let parse str =
           else raise Malformed
         else if h = "quit" then Quit
         else if h = "help" then Help
+        else if h = "rules" then Rules
         else Restart
