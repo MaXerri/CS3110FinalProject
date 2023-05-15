@@ -22,7 +22,16 @@ let message_quit = "- [quit] -> Exit the game and return to the real world."
   "n", and "quit" and converts it to a boolean value. Returns [false] in
   response to a "quit" command. Recurses on itself if an invalid input has been
   recieved*)
-let rec binary_query () : bool = if true then true else binary_query ()
+(* let rec binary_query () : bool = if true then true else binary_query () *)
+let rec binary_query () : bool =
+  let input = read_line () in
+  match String.lowercase_ascii input with
+  | "yes" | "y" -> true
+  | "no" | "n" -> false
+  | "quit" -> exit 0
+  | _ ->
+      print_endline "Invalid input. Please enter 'yes', 'no', or 'quit'.";
+      binary_query ()
 
 exception MalformedInput
 exception TooSmallInput
@@ -214,17 +223,16 @@ let rec progress st =
               (Minesweeper.State.get_current_board x)));
       print_newline ();
       print_endline "You have Lost";
-      print_endline "Would you like to try again?";
+      print_endline "Would you like to try again? [Y/N]";
       if binary_query () then call_newGame () else ()
   | Minesweeper.State.Won ->
-      print_newline ();
-      print_endline "You Have Won!";
       print_newline ();
       Minesweeper.(
         st |> State.get_current_board |> Board.uncover_board
         |> Board.to_string_list |> print_board_helper);
       print_newline ();
-      print_endline "Would you like to try again?";
+      print_endline "You Have Won!";
+      print_endline "Would you like to try again? [Y/N]";
       if binary_query () then call_newGame () else ()
 
 and call_newGame () =
