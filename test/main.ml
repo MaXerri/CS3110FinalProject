@@ -454,24 +454,36 @@ let command_test =
     parse_tester "restart valid" "restart" Command.Restart;
     parse_tester "clear letters" "clear a a" (Command.Clear (0, 0));
     parse_tester "clear alphanumeric" "clear a 0" (Command.Clear (0, 0));
+    parse_tester "clear with whitespace" "   clear   a   a   " (Command.Clear (0, 0));
     parse_tester "flag letters" "flag a a " (Command.Flag (0, 0));
     parse_tester "flag alphanumeric" "flag a 0" (Command.Flag (0, 0));
+    parse_tester "flag with whitespace" "  flag   a      0 " (Command.Flag (0, 0));
     ( "testing invalid quit command" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "quit 0") );
+    ( "Case sensesitive quit" >:: fun _ ->
+      assert_raises Command.Malformed (fun () -> Command.parse "Quit") );  
     ( "testing invalid restart command" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "restart 0") );
+    ( "Case sensesitive restart" >:: fun _ ->
+      assert_raises Command.Malformed (fun () -> Command.parse "Restart") );   
+    ( "Case sensesitive restart" >:: fun _ ->
+      assert_raises Command.Malformed (fun () -> Command.parse "Restart") );   
     ( "invalid clear with one arg" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "clear 0") );
     ( "invalid clear with more than 2 arg" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "clear 0 0 0") );
     ( "clear with 0 args" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "clear") );
+    ( "Case sensetive clear" >:: fun _ ->
+      assert_raises Command.Malformed (fun () -> Command.parse "Clear 0 0") );  
     ( "invalid flag with one arg" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "flag 0") );
     ( "invalid flag with more than 2 arg" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "flag 0 0 0") );
     ( "flag with 0 args" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "flag") );
+    ( "Case sensetive flag" >:: fun _ ->
+      assert_raises Command.Malformed (fun () -> Command.parse "Flag 0 0") );  
     ( "3 random strings" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "0 0 0") );
     ( "empty command" >:: fun _ ->
