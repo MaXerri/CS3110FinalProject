@@ -5,8 +5,14 @@
 type cell
 
 exception MineUncovered
+(** Rased when Cleared Cell contains a mine*)
+
 exception IntegerInputOutOfRange
+(** Used by generate to prevent invalid cells from being created*)
+
 exception ReclearAttempted
+(** Used in cascading to determine whether an empty cell has already been
+    cleared to prevent imfinite looping*)
 
 (*** Functions ****************************************************************)
 
@@ -18,10 +24,14 @@ val clear : cell -> cell
 (** [clear c] is the cell [c] after the player has attempted to clear it. *)
 
 val clear_volatile : cell -> cell
-(** [clear c] is the cell [c] after the player has attempted to clear it. *)
+(** [clear_volatile c] is the cell [c] after the player has attempted to clear
+    it and throws exception if you have a mineuncovered *)
 
 val clear_volatile_cascade : bool ref -> cell -> cell
-(** [clear c] is the cell [c] after the player has attempted to clear it. *)
+(** [clear_volatile cascde r c] is the cell [c] after the player has attempted
+    to clear it and throws an exception if you have a mine uncoverred like in
+    clear volatile. Modifies the ref [r] to be true if the cell uncoverred has
+    no adjacent mines *)
 
 val flag : cell -> cell
 (** [flag c] is the cell [c] after the player has attempted to flag it. *)

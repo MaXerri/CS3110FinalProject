@@ -13,6 +13,7 @@ play:
 	OCAMLRUNPARAM=b dune exec bin/main.exe
 
 doc:
+	dune clean
 	dune build @doc
 
 opendoc: doc

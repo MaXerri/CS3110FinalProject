@@ -458,66 +458,82 @@ let command_test =
     parse_tester "restart with whitespace " "     restart     " Command.Restart;
     parse_tester "clear letters" "clear a a" (Command.Clear (0, 0));
     parse_tester "clear alphanumeric" "clear a 0" (Command.Clear (0, 0));
-    parse_tester "clear with whitespace" "   clear   a   a   " (Command.Clear (0, 0));
+    parse_tester "clear with whitespace" "   clear   a   a   "
+      (Command.Clear (0, 0));
     parse_tester "flag letters" "flag a a " (Command.Flag (0, 0));
     parse_tester "flag alphanumeric" "flag a 0" (Command.Flag (0, 0));
-    parse_tester "flag with whitespace" "  flag   a      0 " (Command.Flag (0, 0));
+    parse_tester "flag with whitespace" "  flag   a      0 "
+      (Command.Flag (0, 0));
     ( "test invalid mix quit restart command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "quit restart") );
+      assert_raises Command.Malformed (fun () -> Command.parse "quit restart")
+    );
     ( "test invalid mix quit rules command" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "quit rules") );
     ( "test invalid mix quit help command" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "quit help") );
     ( "test invalid mix quit flag command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "quit flag 0 0") );
+      assert_raises Command.Malformed (fun () -> Command.parse "quit flag 0 0")
+    );
     ( "testing invalid mix quit clear command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "quit clear 0 0") );
+      assert_raises Command.Malformed (fun () -> Command.parse "quit clear 0 0")
+    );
     ( "testing invalid quit command" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "quit 0") );
     ( "Case sensesitive quit" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "Quit") );  
+      assert_raises Command.Malformed (fun () -> Command.parse "Quit") );
     ( "test invalid mix help restart command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "help restart") );
+      assert_raises Command.Malformed (fun () -> Command.parse "help restart")
+    );
     ( "test invalid mix help rules command" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "help rules") );
     ( "test invalid mix help quit command" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "help quit") );
     ( "test invalid mix help flag command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "help flag 0 0") );
+      assert_raises Command.Malformed (fun () -> Command.parse "help flag 0 0")
+    );
     ( "testing invalid mix help clear command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "help clear 0 0") );
+      assert_raises Command.Malformed (fun () -> Command.parse "help clear 0 0")
+    );
     ( "testing invalid help command" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "help 0") );
     ( "Case sensesitive help" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "Help") ); 
+      assert_raises Command.Malformed (fun () -> Command.parse "Help") );
     ( "test invalid mix rules restart command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "rules restart") );
+      assert_raises Command.Malformed (fun () -> Command.parse "rules restart")
+    );
     ( "test invalid mix rules help command" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "rules help") );
     ( "test invalid mix rules quit command" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "rules quit") );
     ( "test invalid mix rules flag command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "rules flag 0 0") );
+      assert_raises Command.Malformed (fun () -> Command.parse "rules flag 0 0")
+    );
     ( "testing invalid mix rules clear command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "rules clear 0 0") );
+      assert_raises Command.Malformed (fun () ->
+          Command.parse "rules clear 0 0") );
     ( "testing invalid rules command" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "rules 0") );
     ( "Case sensesitive rules" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "Rules") ); 
+      assert_raises Command.Malformed (fun () -> Command.parse "Rules") );
     ( "testing invalid restart command" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "restart 0") );
     ( "Case sensesitive restart" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "Restart") );   
+      assert_raises Command.Malformed (fun () -> Command.parse "Restart") );
     ( "test invalid mix restart quit command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "restart quit") );
+      assert_raises Command.Malformed (fun () -> Command.parse "restart quit")
+    );
     ( "test invalid mix restart rules command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "restart rules") );
+      assert_raises Command.Malformed (fun () -> Command.parse "restart rules")
+    );
     ( "test invalid mix restart help command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "restart help") );
+      assert_raises Command.Malformed (fun () -> Command.parse "restart help")
+    );
     ( "test invalid mix restart flag command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "restart flag 0 0") );
+      assert_raises Command.Malformed (fun () ->
+          Command.parse "restart flag 0 0") );
     ( "testing invalid mix restart clear command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "restart clear 0 0") );
+      assert_raises Command.Malformed (fun () ->
+          Command.parse "restart clear 0 0") );
     ( "invalid clear with one arg" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "clear 0") );
     ( "invalid clear with more than 2 arg" >:: fun _ ->
@@ -525,17 +541,22 @@ let command_test =
     ( "clear with 0 args" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "clear") );
     ( "Case sensetive clear" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "Clear 0 0") ); 
+      assert_raises Command.Malformed (fun () -> Command.parse "Clear 0 0") );
     ( "test invalid mix clear restart command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "clear 0 0 restart") );
+      assert_raises Command.Malformed (fun () ->
+          Command.parse "clear 0 0 restart") );
     ( "test invalid mix clear rules command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "clear 0 0 rules") );
+      assert_raises Command.Malformed (fun () ->
+          Command.parse "clear 0 0 rules") );
     ( "test invalid mix clear help command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "clear 0 0 help") );
+      assert_raises Command.Malformed (fun () -> Command.parse "clear 0 0 help")
+    );
     ( "test invalid mix clear flag command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "clear 0 0 flag 0 0") );
+      assert_raises Command.Malformed (fun () ->
+          Command.parse "clear 0 0 flag 0 0") );
     ( "testing invalid mix clear quit command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "clear 0 0 quit") );
+      assert_raises Command.Malformed (fun () -> Command.parse "clear 0 0 quit")
+    );
     ( "invalid flag with one arg" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "flag 0") );
     ( "invalid flag with more than 2 arg" >:: fun _ ->
@@ -543,17 +564,22 @@ let command_test =
     ( "flag with 0 args" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "flag") );
     ( "Case sensetive flag" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "Flag 0 0") );  
+      assert_raises Command.Malformed (fun () -> Command.parse "Flag 0 0") );
     ( "test invalid mix flag restart command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "flag 0 0 restart") );
+      assert_raises Command.Malformed (fun () ->
+          Command.parse "flag 0 0 restart") );
     ( "test invalid mix flag rules command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "flag 0 0 rules") );
+      assert_raises Command.Malformed (fun () -> Command.parse "flag 0 0 rules")
+    );
     ( "test invalid mix flag help command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "flag 0 0 help") );
+      assert_raises Command.Malformed (fun () -> Command.parse "flag 0 0 help")
+    );
     ( "test invalid mix flag clear command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "flag 0 0 clear 0 0") );
+      assert_raises Command.Malformed (fun () ->
+          Command.parse "flag 0 0 clear 0 0") );
     ( "testing invalid mix flag quit command" >:: fun _ ->
-      assert_raises Command.Malformed (fun () -> Command.parse "flag 0 0 quit") );
+      assert_raises Command.Malformed (fun () -> Command.parse "flag 0 0 quit")
+    );
     ( "3 random strings" >:: fun _ ->
       assert_raises Command.Malformed (fun () -> Command.parse "0 0 0") );
     ( "empty command" >:: fun _ ->
