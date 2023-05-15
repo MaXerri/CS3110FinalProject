@@ -26,7 +26,8 @@ let message_quit = "- [quit] -> Exit the game and return to the real world."
 let rec binary_query () : bool =
   let input = read_line () in
   match String.lowercase_ascii input with
-  | "yes" | "y" | "no" | "n" -> true
+  | "yes" | "y" -> true
+  | "no" | "n" -> false
   | "quit" -> false
   | _ ->
       print_endline "Invalid input. Please enter 'yes', 'no', or 'quit'.";
