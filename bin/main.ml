@@ -22,7 +22,15 @@ let message_quit = "- [quit] -> Exit the game and return to the real world."
   "n", and "quit" and converts it to a boolean value. Returns [false] in
   response to a "quit" command. Recurses on itself if an invalid input has been
   recieved*)
-let rec binary_query () : bool = if true then true else binary_query ()
+(* let rec binary_query () : bool = if true then true else binary_query () *)
+let rec binary_query () : bool =
+  let input = read_line () in
+  match String.lowercase_ascii input with
+  | "yes" | "y" | "no" | "n" -> true
+  | "quit" -> false
+  | _ ->
+      print_endline "Invalid input. Please enter 'yes', 'no', or 'quit'.";
+      binary_query ()
 
 exception MalformedInput
 exception TooSmallInput
