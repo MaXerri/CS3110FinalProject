@@ -449,7 +449,9 @@ let command_test =
     parse_tester "flag valid" "flag 0 0" (Command.Flag (0, 0));
     parse_tester "flag valid extra space " "flag 0  0" (Command.Flag (0, 0));
     parse_tester "quit tester" "quit" Command.Quit;
-    parse_tester "quit tester" "restart" Command.Restart;
+    parse_tester "rules valid" "rules" Command.Rules;
+    parse_tester "help valid" "help" Command.Help;
+    parse_tester "restart valid" "restart" Command.Restart;
     parse_tester "clear letters" "clear a a" (Command.Clear (0, 0));
     parse_tester "clear alphanumeric" "clear a 0" (Command.Clear (0, 0));
     parse_tester "flag letters" "flag a a " (Command.Flag (0, 0));
