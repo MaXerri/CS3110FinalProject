@@ -80,6 +80,26 @@ let rec advance_game st =
     | Minesweeper.Command.Quit ->
         print_endline "You Have Exitted The Game";
         exit 0
+    | Minesweeper.Command.Help ->
+        print_endline "Here is a list of the commands";
+        print_endline "clear <row> <column>";
+        print_endline "flag <row> <column>";
+        print_endline "quit";
+        print_endline "help";
+        print_endline "rules";
+        print_string "> ";
+        advance_game st
+    | Minesweeper.Command.Rules ->
+        print_endline 
+        "\nMinesweeper is a game about clearing the board containing hidden \"mines\" without detonating any of them\n
+        The game board consists of a rectangulr grid of cells, some of which containing mines.\n\n
+        Use the `clear <row> <column>` command to attempt to clear a cell. If the cell contains a mine then you lose.\n
+        Otherwise, the cell will display an integer indcating the number of mines surrounding it\n
+        Using the revealed information, you can deduce what cells are safe to clear.\n
+        Use the `flag <row> <column>` command if you wish to mark a cell as containing a mine without attempting to clear it.\n
+        The goal is to clear all cells except those containing mines";
+        print_string "> ";
+        advance_game st
     | Minesweeper.Command.Restart ->
         print_endline
           "You have restarted the game.  Input the board size for your new \
@@ -151,6 +171,8 @@ let main () =
   print_endline
     "restart -> This starts a new game which you can select the size of";
   print_endline "quit -> This exits you out of the game";
+  print_endline "help -> This displays a list of commands";
+  print_endline "rules -> This displays the rules of Minesweeper";
   print_newline ();
   print_endline
     "Please enter the size of the game you want to load. Separate the desired \

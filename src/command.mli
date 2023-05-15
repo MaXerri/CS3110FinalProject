@@ -14,6 +14,8 @@ type command =
   | Flag of object_phrase
   | Quit
   | Restart
+  | Help
+  | Rules
 
 exception Empty
 (** Raised when an empty command is parsed. *)
