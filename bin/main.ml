@@ -28,7 +28,7 @@ let rec binary_query () : bool =
   match String.lowercase_ascii input with
   | "yes" | "y" -> true
   | "no" | "n" -> false
-  | "quit" -> false
+  | "quit" -> exit 0
   | _ ->
       print_endline "Invalid input. Please enter 'yes', 'no', or 'quit'.";
       binary_query ()
@@ -223,17 +223,16 @@ let rec progress st =
               (Minesweeper.State.get_current_board x)));
       print_newline ();
       print_endline "You have Lost";
-      print_endline "Would you like to try again?";
+      print_endline "Would you like to try again? [Y/N]";
       if binary_query () then call_newGame () else ()
   | Minesweeper.State.Won ->
-      print_newline ();
-      print_endline "You Have Won!";
       print_newline ();
       Minesweeper.(
         st |> State.get_current_board |> Board.uncover_board
         |> Board.to_string_list |> print_board_helper);
       print_newline ();
-      print_endline "Would you like to try again?";
+      print_endline "You Have Won!";
+      print_endline "Would you like to try again? [Y/N]";
       if binary_query () then call_newGame () else ()
 
 and call_newGame () =
