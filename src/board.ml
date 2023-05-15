@@ -304,7 +304,7 @@ let flag_position brd (position : int * int) =
 let to_string_list brd : string list = board_to_stringlist brd
 
 let generate m n =
-  (match generate_random_grid m n (m * n / 10) with
+  (match generate_random_grid m n (m * n / 8) with
   | grd, ct ->
       { validity = true; grid = grd; remainingCells = (m * n) - ct; m; n })
   |> initial_clear

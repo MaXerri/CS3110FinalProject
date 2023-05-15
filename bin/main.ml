@@ -262,7 +262,7 @@ let main () =
   print_endline
     "Please enter the size of the game you want to load. Separate the desired\n\
      row and column size by 1 space. The maximum available board size is \n\
-     (26 x 26): \n";
+     (26 x 26). We reccomend a board of at least (10 x 10): \n";
   print_string "> ";
   let initial_state = get_input () in
   print_board_helper (*fix the printer helper*)
