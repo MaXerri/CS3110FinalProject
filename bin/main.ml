@@ -59,6 +59,7 @@ let rec get_input () =
   in
   let x = read_line () in
   try
+    if x = "quit" then exit 0 else ();
     if valid_size x then play_game x
     else failwith "[get_input] impossible result"
   with
@@ -74,6 +75,10 @@ let rec get_input () =
       print_endline
         "At least one of the values you input was not a number. Please try \
          again:";
+      re_call ()
+  | TooSmallInput ->
+      print_endline
+        "Your request did not meet the desired format. Please try again:";
       re_call ()
 
 (** let rec print_board_helper grid = match grid with | [] -> print_newline () |
@@ -212,7 +217,13 @@ let rec progress st =
       print_endline "Would you like to try again?";
       if binary_query () then call_newGame () else ()
   | Minesweeper.State.Won ->
+      print_newline ();
       print_endline "You Have Won!";
+      print_newline ();
+      Minesweeper.(
+        st |> State.get_current_board |> Board.uncover_board
+        |> Board.to_string_list |> print_board_helper);
+      print_newline ();
       print_endline "Would you like to try again?";
       if binary_query () then call_newGame () else ()
 
