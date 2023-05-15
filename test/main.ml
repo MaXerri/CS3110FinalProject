@@ -364,12 +364,12 @@ let board_test =
       assert_equal b_vis_flag_cleared
         (b_flag_cleared |> Board.to_string_list)
         ~printer:pp_lst );
-    ( "testing genrate func" >:: fun _ ->
-      assert_equal start_vis_board (b_gen |> Board.to_string_list) );
+    (*( "testing genrate func" >:: fun _ -> assert_equal start_vis_board (b_gen
+      |> Board.to_string_list) );*)
     ( "testing genrated board size" >:: fun _ ->
       assert_equal (4, 4) (b_gen |> Board.dimensions) );
-    ( "testing genrated board that it is not complete" >:: fun _ ->
-      assert_equal false (b_gen |> Board.is_complete) );
+    (*( "testing genrated board that it is not complete" >:: fun _ ->
+      assert_equal false (b_gen |> Board.is_complete) );*)
     ( "testing genrated board that it is valid" >:: fun _ ->
       assert_equal true (b_gen |> Board.is_valid) );
     ( "testing clear flagged spot " >:: fun _ ->

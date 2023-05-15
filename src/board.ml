@@ -276,15 +276,38 @@ and clear_position brd (position : int * int) =
   in
   if not !emt then bd else range_clear bd position [ 0; 1; 2; 3; 4; 5; 6; 7 ]
 
+and initial_clear brd : board =
+  let max_itt = ref 100 in
+  let emt = ref false in
+  let boi = ref brd in
+  let pos = ref (-1, -1) in
+  while (not !emt) && !max_itt > 0 do
+    pos := (Random.int brd.m, Random.int brd.n);
+    max_itt := !max_itt - 1;
+    try
+      boi :=
+        {
+          brd with
+          grid =
+            modify_grid_index (Cell.clear_volatile_cascade emt) !pos brd.grid;
+          remainingCells = brd.remainingCells - 1;
+        }
+    with
+    | Cell.MineUncovered -> emt := false
+    | Cell.ReclearAttempted -> emt := false
+  done;
+  range_clear !boi !pos [ 0; 1; 2; 3; 4; 5; 6; 7 ]
+
 let flag_position brd (position : int * int) =
   { brd with grid = modify_grid_index Cell.flag position brd.grid }
 
 let to_string_list brd : string list = board_to_stringlist brd
 
 let generate m n =
-  match generate_random_grid m n (m * n / 12) with
+  (match generate_random_grid m n (m * n / 12) with
   | grd, ct ->
-      { validity = true; grid = grd; remainingCells = (m * n) - ct; m; n }
+      { validity = true; grid = grd; remainingCells = (m * n) - ct; m; n })
+  |> initial_clear
 
 let generate_from_bool_grid bool_grd =
   let cols = List.length bool_grd in
